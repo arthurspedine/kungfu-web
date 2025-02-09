@@ -1,12 +1,12 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import loginUser from '@/http/auth'
 import { loginDataSchema, type LoginDataInput } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import loginUser from '../handle-login'
 
 export function LoginForm() {
   const {

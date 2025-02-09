@@ -29,3 +29,10 @@ export default async function loginUser(data: LoginDataInput) {
     throw new Error('Houve um erro ao logar.')
   }
 }
+
+export async function logout() {
+  const cookie_name = process.env.COOKIE_NAME
+  if (!cookie_name) throw new Error('Configurar o nome do cookie.')
+  ;(await cookies()).set(cookie_name, '', { expires: new Date() })
+  return true
+}
