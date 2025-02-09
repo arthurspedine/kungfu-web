@@ -3,12 +3,13 @@
 import { cookies } from 'next/headers'
 
 export async function getUserInfo() {
+  const c = await cookies()
   try {
     const response = await fetch(`${process.env.BACKEND_URL}/user/info`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        Cookie: (await cookies()).toString(),
+        Cookie: c.toString(),
       },
     })
 

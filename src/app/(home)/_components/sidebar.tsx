@@ -1,4 +1,4 @@
-// 'use server'
+'use server'
 import Image from 'next/image'
 import logo from '&/public/logo.svg'
 import { getUserInfo } from '@/http/get-user-info'
