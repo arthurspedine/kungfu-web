@@ -4,12 +4,29 @@ import logo from '&/public/logo.svg'
 import { getUserInfo } from '@/http/get-user-info'
 import { LogOutButton } from './logout-button'
 import { MapPin, User } from 'lucide-react'
+import { NavigationMenu } from './navigation-menu'
+import type { NavigationProp } from '@/types'
 
 export async function MenuSidebar() {
   const userInfo: { name: string; email: string } = await getUserInfo()
 
+  const navigation_links: NavigationProp[] = [
+    {
+      id: 1,
+      path: '/training_centers',
+      label: 'Núcleos',
+      icon: <MapPin />,
+    },
+    {
+      id: 2,
+      path: '/students',
+      label: 'Alunos',
+      icon: <User />,
+    },
+  ]
+
   return (
-    <div className='w-72 h-full bg-[#F5F7F9] space-y-8 px-6'>
+    <div className='w-72 h-full bg-[#F5F7F9] space-y-8 px-6 shadow-xl'>
       <Image
         src={logo}
         alt='Kung Fu Taishan Logo'
@@ -26,21 +43,7 @@ export async function MenuSidebar() {
       </div>
 
       {/* NAVIGATION */}
-      <div className='space-y-1'>
-        <p className='font-bold text-sm'>Navegação</p>
-        {/* CARD 1 */}
-        <div className='bg-white border border-border py-2 px-4 rounded-xl'>
-          <p className='flex gap-1 items-center text-[#B02837]'>
-            <User /> Alunos
-          </p>
-        </div>
-        {/* CARD 2 */}
-        <div className='py-2 px-4'>
-          <p className='flex gap-1 items-center'>
-            <MapPin /> Núcleos
-          </p>
-        </div>
-      </div>
+      <NavigationMenu links={navigation_links} />
     </div>
   )
 }

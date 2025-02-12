@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang='pt-BR' suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <main className='flex flex-col h-screen w-full scroll-smooth bg-background'>
+        <main className='flex flex-col h-screen w-full scroll-smooth'>
           {children}
           <Toaster theme='light' richColors />
         </main>
