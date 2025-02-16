@@ -1,10 +1,15 @@
 'use client'
 import {
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
   type ColumnDef,
+  getFilteredRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  type Column,
 } from '@tanstack/react-table'
 import {
   Table,
@@ -20,6 +25,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Plus,
 } from 'lucide-react'
 import {
   Select,
@@ -28,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useMemo, useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -38,19 +45,66 @@ export function TrainingCentersDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      columnFilters,
+    },
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   })
+
+  const headerGroups = table.getHeaderGroups()
+
+  const filterHeaders = [
+    { headerName: 'name', selectHeader: 'Núcleo' },
+    { headerName: 'teacher_name', selectHeader: 'Professor Docente' },
+    { headerName: 'city', selectHeader: 'Cidade' },
+    { headerName: 'state', selectHeader: 'Estado' },
+  ]
 
   return (
     <div>
+      <div className='w-full py-4 flex flex-col-reverse gap-4 md:flex-row xl:items-center md:gap-0 md:space-x-4'>
+        {headerGroups.map(headerGroup => (
+          <div
+            key={headerGroup.id}
+            className='flex space-y-2 xl:space-y-0 xl:space-x-4 w-full flex-col xl:flex-row'
+          >
+            {headerGroup.headers.map(header => {
+              const headerName = header.id
+              if (headerName) {
+                const headerObject = filterHeaders.find(
+                  h => h.headerName === headerName
+                )
+                if (headerObject) {
+                  return (
+                    <Filter
+                      column={header.column}
+                      key={header.id}
+                      headerValue={headerObject.selectHeader}
+                    />
+                  )
+                }
+              }
+            })}
+          </div>
+        ))}
+        <Button variant={'green'}>
+          <Plus /> Cadastrar Núcleo
+        </Button>
+      </div>
       <div className='border border-[#CACACA] rounded-xl w-full overflow-auto'>
         <Table className='bg-[##F5F5F5]'>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
+            {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   return (
@@ -95,7 +149,7 @@ export function TrainingCentersDataTable<TData, TValue>({
         </Table>
       </div>
       {table.getRowModel().rows?.length > 0 && (
-        <div className='flex flex-col md:flex-row md:items-center md:justify-between lg:justify-end py-2 md:space-x-4'>
+        <div className='flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:justify-between lg:justify-end py-2 md:space-x-4'>
           <div className='flex flex-col lg:space-x-4 lg:flex-row lg:items-center'>
             {/* LINES PER PAGE */}
             <div className='flex items-center space-x-2'>
@@ -164,5 +218,41 @@ export function TrainingCentersDataTable<TData, TValue>({
         </div>
       )}
     </div>
+  )
+}
+
+function Filter({
+  column,
+  headerValue,
+}: { column: Column<any, unknown>; headerValue: string }) {
+  const columnFilterValue = column.getFilterValue()
+
+  const sortedUniqueValues: string[] = useMemo(
+    () =>
+      Array.from(column.getFacetedUniqueValues().keys()).sort().slice(0, 5000),
+    [column]
+  )
+
+  const clearFilterTag = 'clear filter'
+
+  return (
+    <Select
+      onValueChange={e => {
+        column.setFilterValue(e === clearFilterTag ? '' : e)
+      }}
+      value={columnFilterValue?.toString() || ''}
+    >
+      <SelectTrigger header={headerValue}>
+        <SelectValue placeholder='Selecione' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={clearFilterTag}>Todos</SelectItem>
+        {sortedUniqueValues.map(value => (
+          <SelectItem value={value} key={value}>
+            {value}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }

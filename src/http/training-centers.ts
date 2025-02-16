@@ -3,8 +3,6 @@ import { cookies } from 'next/headers'
 
 export async function getTrainingCentersList() {
   const c = await cookies()
-  const url = `${process.env.BACKEND_URL}/training-center/all`
-  console.log(url)
 
   try {
     const response = await fetch(
