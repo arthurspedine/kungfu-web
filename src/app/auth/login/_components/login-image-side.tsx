@@ -1,13 +1,13 @@
 'use client'
-import Image, { type StaticImageData } from 'next/image'
-import { useEffect, useState } from 'react'
 import writing from '&/public/taishan_writing.png'
-import { ImageSlider } from './image-slider'
 import image1 from '@/assets/carousel-images/photo1.jpg'
 import image2 from '@/assets/carousel-images/photo2.jpg'
 import image3 from '@/assets/carousel-images/photo3.jpg'
 import image4 from '@/assets/carousel-images/photo4.jpg'
 import image5 from '@/assets/carousel-images/photo5.jpg'
+import Image, { type StaticImageData } from 'next/image'
+import { useEffect, useState } from 'react'
+import { ImageSlider } from './image-slider'
 
 export function LoginImageSide() {
   const images: { id: number; path: StaticImageData }[] = [

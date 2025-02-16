@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import loginUser from '@/http/auth'
-import { loginDataSchema, type LoginDataInput } from '@/schemas'
+import { type LoginDataInput, loginDataSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -36,7 +36,7 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(handleLoginSubmit)}
-      className='flex space-y-6 pt-12 pb-20 flex-col'
+      className='flex space-y-6 pt-6 flex-col'
     >
       <div className='space-y-3'>
         <div>

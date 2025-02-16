@@ -1,11 +1,11 @@
 'use server'
-import Image from 'next/image'
 import logo from '&/public/logo.svg'
 import { getUserInfo } from '@/http/get-user-info'
-import { LogOutButton } from './logout-button'
-import { MapPin, User } from 'lucide-react'
-import { NavigationMenu } from './navigation-menu'
 import type { NavigationProp } from '@/types'
+import { MapPin, User } from 'lucide-react'
+import Image from 'next/image'
+import { LogOutButton } from './logout-button'
+import { NavigationMenu } from './navigation-menu'
 
 export async function MenuSidebar() {
   const userInfo: { name: string; email: string } = await getUserInfo()

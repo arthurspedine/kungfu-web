@@ -1,7 +1,7 @@
 'use client'
 
-import { EllipsisVertical } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
+import { EllipsisVertical } from 'lucide-react'
 
 export type TrainingCenterData = {
   id: string

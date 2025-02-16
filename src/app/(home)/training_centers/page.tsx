@@ -1,7 +1,7 @@
 import { Title } from '@/components/title'
 import { getTrainingCentersList } from '@/http/training-centers'
+import { type TrainingCenterData, columns } from './_components/columns'
 import { TrainingCentersDataTable } from './_components/table'
-import { columns, type TrainingCenterData } from './_components/columns'
 
 export default async function TrainingCentersPage() {
   const trainingCenters: TrainingCenterData[] = await getTrainingCentersList()
