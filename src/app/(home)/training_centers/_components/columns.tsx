@@ -10,8 +10,7 @@ export type TrainingCenterData = {
   }
   studentsNumber: number
   name: string
-  street: string
-  number: number
+  fullAddress: string
   city: string
   state: string
   zipCode: string
@@ -36,7 +35,7 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
     header: 'Professor Docente',
   },
   {
-    accessorKey: 'street',
+    accessorKey: 'fullAddress',
     header: 'Endereço',
   },
   {
@@ -50,6 +49,12 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
   {
     accessorKey: 'openingDate',
     header: 'Inauguração',
+    cell: ({ row }) => {
+      const value: string | null = row.getValue('openingDate')
+      const stripped = value?.split('-')
+      if (!stripped || stripped?.length < 2) return value
+      return `${stripped[2]}/${stripped[1]}/${stripped[0]}`
+    },
   },
   {
     accessorKey: 'closingDate',
