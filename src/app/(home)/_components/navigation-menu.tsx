@@ -19,7 +19,7 @@ export function NavigationMenu({ links }: { links: NavigationProp[] }) {
         <Link
           href={link.path}
           key={link.id}
-          className={`py-2 px-4 rounded-xl flex gap-1 items-center ${pathname.startsWith(link.path) && 'border border-border bg-white text-[#B02837]'}`}
+          className={`py-2 px-4 rounded-xl flex gap-1 items-center ${pathname.startsWith(link.path) && 'border border-border bg-white text-[#B02837] shadow-md'}`}
         >
           {link.icon} {link.label}
         </Link>

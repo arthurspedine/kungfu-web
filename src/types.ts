@@ -6,3 +6,11 @@ export type NavigationProp = {
   label: string
   icon: JSX.Element
 }
+
+export type ViaCEPType = {
+  cep: string
+  logradouro: string
+  localidade: string
+  uf: string
+  erro?: string
+}

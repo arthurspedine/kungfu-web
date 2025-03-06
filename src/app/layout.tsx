@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'sonner'
+import icon from '&/public/favicon.ico'
 
 export const metadata: Metadata = {
   title: 'Kung Fu Taishan',
@@ -17,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR' suppressHydrationWarning>
+      <head>
+        <link rel='icon' href={icon.src} sizes='any' />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <main className='flex flex-col h-screen w-full scroll-smooth'>
           {children}

@@ -46,7 +46,6 @@ export function LoginForm() {
           <Input
             id='email'
             {...register('email')}
-            className='placeholder:text-sm'
             placeholder='e-mail da conta'
           />
           {errors.email && (
@@ -65,7 +64,6 @@ export function LoginForm() {
             type='password'
             {...register('password')}
             placeholder='Senha'
-            className='placeholder:text-sm'
           />
           {errors.password && (
             <p className='text-destructive pt-0.5 text-sm'>

@@ -34,6 +34,7 @@ import {
   ChevronsRight,
   Plus,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
@@ -41,10 +42,19 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function TrainingCentersDataTable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  buttonConfig,
+  filterHeaders,
+}: DataTableProps<TData, TValue> & {
+  buttonConfig: {
+    label: string
+    redirectTo?: string
+  }
+  filterHeaders: { headerName: string; selectHeader: string }[]
+}) {
+  const router = useRouter()
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const table = useReactTable({
@@ -62,13 +72,6 @@ export function TrainingCentersDataTable<TData, TValue>({
   })
 
   const headerGroups = table.getHeaderGroups()
-
-  const filterHeaders = [
-    { headerName: 'name', selectHeader: 'Núcleo' },
-    { headerName: 'teacher_name', selectHeader: 'Professor Docente' },
-    { headerName: 'city', selectHeader: 'Cidade' },
-    { headerName: 'state', selectHeader: 'Estado' },
-  ]
 
   return (
     <div>
@@ -97,8 +100,11 @@ export function TrainingCentersDataTable<TData, TValue>({
             })}
           </div>
         ))}
-        <Button variant={'green'}>
-          <Plus /> Cadastrar Núcleo
+        <Button
+          variant={'green'}
+          onClick={() => router.replace(buttonConfig.redirectTo ?? '')}
+        >
+          <Plus /> {buttonConfig.label}
         </Button>
       </div>
       <div className='border border-[#CACACA] rounded-xl w-full overflow-auto'>
@@ -160,7 +166,7 @@ export function TrainingCentersDataTable<TData, TValue>({
                   table.setPageSize(Number(value))
                 }}
               >
-                <SelectTrigger className='h-8 w-[70px]'>
+                <SelectTrigger className='h-8 w-[70px]' size='36'>
                   <SelectValue
                     placeholder={table.getState().pagination.pageSize}
                   />
@@ -224,6 +230,7 @@ export function TrainingCentersDataTable<TData, TValue>({
 function Filter({
   column,
   headerValue,
+  // biome-ignore lint/suspicious/noExplicitAny: receive any context
 }: { column: Column<any, unknown>; headerValue: string }) {
   const columnFilterValue = column.getFilterValue()
 
@@ -242,7 +249,7 @@ function Filter({
       }}
       value={columnFilterValue?.toString() || ''}
     >
-      <SelectTrigger header={headerValue}>
+      <SelectTrigger size='48' header={headerValue}>
         <SelectValue placeholder='Selecione' />
       </SelectTrigger>
       <SelectContent>
