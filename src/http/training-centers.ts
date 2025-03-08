@@ -1,5 +1,6 @@
 'use server'
 import type { AddTrainingCenterType } from '@/schemas'
+import { revalidateTag } from 'next/cache'
 import { cookies } from 'next/headers'
 
 export async function getTrainingCentersList() {
@@ -9,6 +10,9 @@ export async function getTrainingCentersList() {
     const response = await fetch(
       `${process.env.BACKEND_URL}/training-center/all`,
       {
+        next: {
+          tags: ['training-center-all'],
+        },
         cache: 'no-cache',
         credentials: 'include',
         headers: {
@@ -47,9 +51,24 @@ export async function handleAddTrainingCenter(data: AddTrainingCenterType) {
     )
 
     if (!response.ok) {
-      const errorResponse = await response.text()
-      return Promise.reject(new Error(JSON.parse(errorResponse).error))
+      const errorResponse:
+        | { error: string }
+        | { field: string; message: string }[] = await response.json()
+
+      if (Array.isArray(errorResponse)) {
+        let finalMessage = ''
+
+        for (let index = 0; index < errorResponse.length; index++) {
+          const element = errorResponse[index]
+          finalMessage += `${element.message}\n`
+        }
+
+        return Promise.reject(new Error(finalMessage))
+      }
+
+      return Promise.reject(new Error(errorResponse.error))
     }
+    revalidateTag('training-center-all')
   } catch (e) {
     return Promise.reject(new Error('Houve um erro ao cadastrar o núcleo.'))
   }

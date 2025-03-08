@@ -96,13 +96,20 @@ export function AddTrainingCenterForm({
     toast.promise(addTrainingCenterRequest, {
       loading: 'Cadastrando núcleo...',
       success: () => {
-        setTimeout(() => {
-          router.replace('/training_centers')
-        }, 1000)
+        router.replace('/training_centers')
         return 'Núcleo cadastrado com sucesso!'
       },
       error: err => {
-        return err.message || 'Algo deu errado ao cadastrar o núcleo.'
+        if (typeof err === 'string') {
+          return err
+        }
+        if (typeof err === 'object') {
+          if (err.message) {
+            return err.message
+          }
+        }
+
+        return 'Algo deu errado ao cadastrar o núcleo.'
       },
       position: 'top-center',
       style: { filter: 'none', zIndex: 10 },
@@ -157,38 +164,58 @@ export function AddTrainingCenterForm({
             </p>
           )}
         </div>
-        <div>
-          <Label>Número</Label>
-          {loading ? (
-            <Skeleton className='h-9 w-full' />
-          ) : (
-            <Input
-              value={
-                getValues('number') === undefined ||
-                getValues('number') === null
-                  ? 0
-                  : getValues('number')
-              }
-              placeholder='Digite o número do núcleo'
-              disabled={disabledInputs}
-              type='number'
-              {...register('number', {
-                onChange: e => {
-                  if (e.target.value === '') {
-                    setValue('number', 0, { shouldValidate: true })
-                  } else {
-                    const numValue = Number(e.target.value)
-                    setValue('number', numValue, { shouldValidate: true })
-                  }
-                },
-              })}
-            />
-          )}
-          {errors.number && (
-            <p className='text-destructive text-sm pt-0.5'>
-              {errors.number.message}
-            </p>
-          )}
+        <div className='flex space-x-4'>
+          <div className='w-1/3'>
+            <Label>Número</Label>
+            {loading ? (
+              <Skeleton className='h-9 w-full' />
+            ) : (
+              <Input
+                value={
+                  getValues('number') === undefined ||
+                  getValues('number') === null
+                    ? 0
+                    : getValues('number')
+                }
+                placeholder='Digite o número do núcleo'
+                disabled={disabledInputs}
+                type='number'
+                {...register('number', {
+                  onChange: e => {
+                    if (e.target.value === '') {
+                      setValue('number', 0, { shouldValidate: true })
+                    } else {
+                      const numValue = Number(e.target.value)
+                      setValue('number', numValue, { shouldValidate: true })
+                    }
+                  },
+                })}
+              />
+            )}
+            {errors.number && (
+              <p className='text-destructive text-sm pt-0.5'>
+                {errors.number.message}
+              </p>
+            )}
+          </div>
+          <div className='w-2/3'>
+            <Label>Complemento</Label>
+            {loading ? (
+              <Skeleton className='h-9 w-full' />
+            ) : (
+              <Input
+                placeholder='Digite o complemento do núcleo'
+                disabled={disabledInputs}
+                type='text'
+                {...register('additionalAddress')}
+              />
+            )}
+            {errors.additionalAddress && (
+              <p className='text-destructive text-sm pt-0.5'>
+                {errors.additionalAddress.message}
+              </p>
+            )}
+          </div>
         </div>
         <div className='flex space-x-4 w-full'>
           <div className='w-1/2'>

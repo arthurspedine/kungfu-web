@@ -75,6 +75,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      {/* HEADER */}
       <div className='w-full py-4 flex flex-col-reverse gap-4 md:flex-row xl:items-center md:gap-0 md:space-x-4'>
         {headerGroups.map(headerGroup => (
           <div

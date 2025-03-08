@@ -49,9 +49,10 @@ export function TeacherCombobox({
   teachersList,
 }: {
   setValue: UseFormSetValue<{
-    name: string
     teacherId: string
+    name: string
     street: string
+    additionalAddress: string
     city: string
     state: string
     zipCode: string
@@ -62,6 +63,7 @@ export function TeacherCombobox({
     teacherId: string
     name: string
     street: string
+    additionalAddress: string
     city: string
     state: string
     zipCode: string
@@ -79,7 +81,7 @@ export function TeacherCombobox({
         <Button
           variant='outline'
           aria-expanded={open}
-          className='w-[300px] justify-between text-muted-foreground font-normal'
+          className='w-80 justify-between text-muted-foreground font-normal'
         >
           {value
             ? teachersList.find(teacher => teacher.id === value)?.name
@@ -87,7 +89,7 @@ export function TeacherCombobox({
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[240px] p-0'>
+      <PopoverContent className='w- p-0'>
         <Command>
           <CommandInput placeholder='Digite o nome do professor docente...' />
           <CommandList>
@@ -103,6 +105,7 @@ export function TeacherCombobox({
                     clearErrors('teacherId')
                     setOpen(false)
                   }}
+                  className='text-nowrap'
                 >
                   <Check
                     className={cn(

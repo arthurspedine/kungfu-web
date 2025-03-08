@@ -36,7 +36,7 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
   },
   {
     accessorKey: 'fullAddress',
-    header: 'Endereço',
+    header: 'Endereço Completo',
   },
   {
     accessorKey: 'city',
