@@ -1,5 +1,13 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import { DialogTrigger } from '@/components/ui/dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import type { ColumnDef } from '@tanstack/react-table'
 import { EllipsisVertical } from 'lucide-react'
 
@@ -18,7 +26,9 @@ export type TrainingCenterData = {
   closingDate: string | null
 }
 
-export const columns: ColumnDef<TrainingCenterData>[] = [
+export const columns = (
+  setSelectedTrainingCenterId: (id: string) => void
+): ColumnDef<TrainingCenterData>[] => [
   {
     id: 'id',
     cell: ({ row }) => {
@@ -76,9 +86,23 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
       const trainingCenter = row.original
 
       return (
-        <button type='button' onClick={() => console.log(trainingCenter.id)}>
-          <EllipsisVertical />
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DialogTrigger
+                asChild
+                onClick={() => setSelectedTrainingCenterId(trainingCenter.id)}
+              >
+                <Button variant={'ghost'}>
+                  <EllipsisVertical />
+                </Button>
+              </DialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Editar</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )
     },
   },

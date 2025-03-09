@@ -73,3 +73,29 @@ export async function handleAddTrainingCenter(data: AddTrainingCenterType) {
     return Promise.reject(new Error('Houve um erro ao cadastrar o núcleo.'))
   }
 }
+
+export async function getTrainingCenterInfo(trainingCenterId: string) {
+  const c = await cookies()
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/training-center/info/${trainingCenterId}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          Cookie: c.toString(),
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Houve um erro ao buscar as informações do núcleo.')
+    }
+
+    return await response.json()
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}

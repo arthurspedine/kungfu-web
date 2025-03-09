@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
         </Button>
       </div>
       <div className='border border-[#CACACA] rounded-xl w-full overflow-auto'>
-        <Table className='bg-[##F5F5F5]'>
+        <Table className='bg-[#F5F5F5]'>
           <TableHeader>
             {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id}>
