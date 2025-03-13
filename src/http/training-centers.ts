@@ -70,7 +70,11 @@ export async function handleAddTrainingCenter(data: AddTrainingCenterType) {
     }
     revalidateTag('training-center-all')
   } catch (e) {
-    return Promise.reject(new Error('Houve um erro ao cadastrar o núcleo.'))
+    console.error(e)
+    return Promise.reject({
+      error:
+        e instanceof Error ? e.message : 'Houve um erro ao cadastrar o núcleo.',
+    })
   }
 }
 

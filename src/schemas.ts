@@ -51,7 +51,9 @@ export const addTrainingCenterSchema = z.object({
   openingDate: z.string().refine(
     val => {
       const date = new Date(val)
-      return !Number.isNaN(date.getTime()) && date < new Date()
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      return !Number.isNaN(date.getTime()) && date < today
     },
     {
       message: 'Data de inauguração inválida ou no futuro.',

@@ -100,15 +100,7 @@ export function AddTrainingCenterForm({
         return 'Núcleo cadastrado com sucesso!'
       },
       error: err => {
-        if (typeof err === 'string') {
-          return err
-        }
-        if (typeof err === 'object') {
-          if (err.message) {
-            return err.message
-          }
-        }
-
+        if (err.error) return err.error
         return 'Algo deu errado ao cadastrar o núcleo.'
       },
       position: 'top-center',
