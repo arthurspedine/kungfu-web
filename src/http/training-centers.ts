@@ -1,5 +1,5 @@
 'use server'
-import type { TrainingCenterType } from '@/schemas'
+import type { AddTrainingCenterType } from '@/schemas'
 import type { ActionResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
 import { cookies } from 'next/headers'
@@ -35,7 +35,7 @@ export async function getTrainingCentersList() {
 }
 
 export async function handleAddTrainingCenter(
-  data: TrainingCenterType
+  data: AddTrainingCenterType
 ): Promise<ActionResponse> {
   const c = await cookies()
   try {

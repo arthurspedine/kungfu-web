@@ -43,10 +43,16 @@ export const columns = (
   {
     accessorKey: 'name',
     header: 'Nome',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'teacher.name',
     header: 'Professor Docente',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     id: 'fullAddress',
@@ -61,10 +67,16 @@ export const columns = (
   {
     accessorKey: 'city',
     header: 'Cidade',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'state',
     header: 'Estado',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'openingDate',

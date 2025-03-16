@@ -2,7 +2,7 @@
 
 import { Dialog } from '@/components/ui/dialog'
 import { columns, type TrainingCenterData } from './columns'
-import { DataTable } from '@/components/datatable'
+import { DataTable } from '@/components/datatable/data-table'
 import { EditTrainingCenterDialog } from './edit-training-center'
 import { useState } from 'react'
 
@@ -12,17 +12,17 @@ export function TrainingCentersContent({
   const [selectedTrainingCenterId, setSelectedTrainingCenterId] =
     useState<string>('')
 
-  const filterHeaders = [
-    { headerName: 'name', selectHeader: 'Núcleo' },
-    { headerName: 'teacher_name', selectHeader: 'Professor Docente' },
-    { headerName: 'city', selectHeader: 'Cidade' },
-    { headerName: 'state', selectHeader: 'Estado' },
-  ]
-
   const buttonConfig = {
     label: 'Cadastrar Núcleo',
     redirectTo: '/training_centers/add',
   }
+
+  const filterColumns = [
+    { id: 'name', label: 'Núcleo' },
+    { id: 'teacher_name', label: 'Professor Docente' },
+    { id: 'city', label: 'Cidade' },
+    { id: 'state', label: 'Estado' },
+  ]
 
   function resetTrainingCenterId() {
     setSelectedTrainingCenterId('')
@@ -30,11 +30,11 @@ export function TrainingCentersContent({
 
   return (
     <Dialog>
-      <DataTable<TrainingCenterData, unknown>
+      <DataTable
         columns={columns(setSelectedTrainingCenterId)}
         data={trainingCenters}
         buttonConfig={buttonConfig}
-        filterHeaders={filterHeaders}
+        filterColumns={filterColumns}
       />
       <EditTrainingCenterDialog
         resetTrainingCenterId={resetTrainingCenterId}
