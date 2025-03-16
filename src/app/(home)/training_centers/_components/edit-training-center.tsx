@@ -14,184 +14,195 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { Label } from '@/components/label'
 import { Input } from '@/components/ui/input'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  editTrainingCenterSchema,
+  type EditTrainingCenterType,
+} from '@/schemas'
 
-export function EditTrainingCenterDialong({
+export function EditTrainingCenterDialog({
   trainingCenterId,
-}: { trainingCenterId: string }) {
+  resetTrainingCenterId,
+}: { trainingCenterId: string; resetTrainingCenterId: () => void }) {
   const [trainingCenter, setTrainingCenter] =
     useState<TrainingCenterData | null>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
-  const isOpenRef = useRef<boolean>(false)
+
+  const {
+    handleSubmit,
+    register,
+    control,
+    setValue,
+    getValues,
+    clearErrors,
+    reset,
+    formState: { errors },
+  } = useForm<EditTrainingCenterType>({
+    resolver: zodResolver(editTrainingCenterSchema),
+  })
 
   useEffect(() => {
-    isOpenRef.current = true
-
     setTrainingCenter(null)
 
+    // Clear errors and reset the form state
+    clearErrors()
+    reset()
+
     const fetchTrainingCenterInfo = async () => {
-      if (trainingCenterId && isOpenRef.current) {
+      if (trainingCenterId) {
         const data = await getTrainingCenterInfo(trainingCenterId)
-        if (isOpenRef.current) {
-          if (data) {
-            setTrainingCenter(data)
-          } else {
-            closeRef.current?.click()
-            toast.error('Você não tem permissão para atualizar este núcleo', {
-              position: 'top-center',
-              style: { filter: 'none', zIndex: 10 },
-            })
-            setTrainingCenter(null)
-          }
+        if (data) {
+          // biome-ignore lint/complexity/noForEach: use forEach
+          Object.keys(data).forEach(key => {
+            setValue(
+              key as keyof EditTrainingCenterType,
+              data[key as keyof TrainingCenterData]
+            )
+          })
+          toast.info('A funcionalidade de edição ainda não está disponível.', {
+            position: 'top-center',
+            style: { filter: 'none', zIndex: 10 },
+          })
+          // setTrainingCenter(data)
+        } else {
+          closeRef.current?.click()
+          toast.error('Você não tem permissão para atualizar este núcleo.', {
+            position: 'top-center',
+            style: { filter: 'none', zIndex: 10 },
+          })
+          resetTrainingCenterId()
         }
       }
     }
 
     fetchTrainingCenterInfo()
+  }, [trainingCenterId, resetTrainingCenterId, setValue, clearErrors, reset])
 
-    return () => {
-      isOpenRef.current = false
-    }
-  }, [trainingCenterId])
+  function handleEditSubmit(data: EditTrainingCenterType) {}
 
   return (
-    <>
-      <DialogClose ref={closeRef} className='hidden' />
-      <DialogContent
-        onOpenAutoFocus={() => {
-          isOpenRef.current = true
-          setTrainingCenter(null)
-        }}
-        onPointerDownOutside={() => {
-          isOpenRef.current = false
-        }}
-      >
-        <div className='flex flex-col gap-6 h-full justify-end'>
-          <div className='flex flex-col gap-3'>
-            <div className='flex items-center justify-between'>
-              <DialogTitle>Editar Núcleo</DialogTitle>
-              <DialogClose
-                onClick={() => {
-                  isOpenRef.current = false
-                }}
-              >
-                <X className='size-5 text-zinc-600' />
-              </DialogClose>
-            </div>
-
-            <DialogDescription>
-              {trainingCenter ? (
-                <> Editar informações do núcleo {trainingCenter.name}</>
-              ) : (
-                <></>
-              )}
-            </DialogDescription>
-            {!trainingCenter && <Skeleton className='w-full h-12' />}
+    <DialogContent>
+      <div className='flex flex-col gap-6 h-full justify-end'>
+        <div className='flex flex-col gap-3'>
+          <div className='flex items-center justify-between'>
+            <DialogTitle>Editar Núcleo</DialogTitle>
+            <DialogClose ref={closeRef}>
+              <X className='size-5 text-zinc-600' />
+            </DialogClose>
           </div>
 
-          <form className='flex-1 flex flex-col justify-between'>
+          <DialogDescription>
             {trainingCenter ? (
-              <div className='w-full space-y-2'>
-                <div>
-                  <Label>Nome do Núcleo</Label>
-                  <Input />
-                </div>
-                <div>
-                  <Label>Código Postal</Label>
-                  <Input />
-                </div>
-                <div>
-                  <Label>Endereço</Label>
-                  <Input />
-                </div>
-                <div className='flex space-x-4 w-full'>
-                  <div className='w-1/3'>
-                    <Label>Número</Label>
-                    <Input />
-                  </div>
-                  <div className='w-2/3'>
-                    <Label>Complemento</Label>
-                    <Input />
-                  </div>
-                </div>
-                <div className='flex space-x-4 w-full'>
-                  <div className='w-1/2'>
-                    <Label>Cidade</Label>
-                    <Input />
-                  </div>
-                  <div className='w-1/2'>
-                    <Label>Estado</Label>
-                    <Input />
-                  </div>
-                </div>
-                <div>
-                  <Label>Professor Docente</Label>
-                  <Input />
-                </div>
-                <div>
-                  <Label>Data de Inauguração</Label>
-                  <Input type='date' className='w-40' />
-                </div>
-              </div>
+              <> Editar informações do núcleo {getValues('name')}</>
             ) : (
-              <div className='w-full space-y-2'>
-                <div>
-                  <Label>Nome do Núcleo</Label>
-                  <Skeleton className='h-9 w-full' />
+              <></>
+            )}
+          </DialogDescription>
+          {!trainingCenter && <Skeleton className='w-full h-12' />}
+        </div>
+
+        <form
+          className='flex-1 flex flex-col justify-between'
+          onSubmit={handleSubmit(handleEditSubmit)}
+        >
+          {trainingCenter ? (
+            <div className='w-full space-y-2'>
+              <div>
+                <Label>Nome do Núcleo</Label>
+                <Input />
+              </div>
+              <div>
+                <Label>CEP</Label>
+                <Input />
+              </div>
+              <div>
+                <Label>Endereço</Label>
+                <Input />
+              </div>
+              <div className='flex space-x-4 w-full'>
+                <div className='w-1/3'>
+                  <Label>Número</Label>
+                  <Input />
                 </div>
-                <div>
-                  <Label>Código Postal</Label>
-                  <Skeleton className='h-9 w-full' />
-                </div>
-                <div>
-                  <Label>Endereço</Label>
-                  <Skeleton className='h-9 w-full' />
-                </div>
-                <div className='flex space-x-4 w-full'>
-                  <div className='w-1/3'>
-                    <Label>Número</Label>
-                    <Skeleton className='h-9 w-full' />
-                  </div>
-                  <div className='w-2/3'>
-                    <Label>Complemento</Label>
-                    <Skeleton className='h-9 w-full' />
-                  </div>
-                </div>
-                <div className='flex space-x-4 w-full'>
-                  <div className='w-1/2'>
-                    <Label>Cidade</Label>
-                    <Skeleton className='h-9 w-full' />
-                  </div>
-                  <div className='w-1/2'>
-                    <Label>Estado</Label>
-                    <Skeleton className='h-9 w-full' />
-                  </div>
-                </div>
-                <div>
-                  <Label>Professor Docente</Label>
-                  <Skeleton className='h-9 w-full' />
-                </div>
-                <div>
-                  <Label>Data de Inauguração</Label>
-                  <Skeleton className='h-9 w-40' />
+                <div className='w-2/3'>
+                  <Label>Complemento</Label>
+                  <Input />
                 </div>
               </div>
-            )}
-            <div className='flex items-center gap-3'>
-              <DialogClose
-                asChild
-                onClick={() => {
-                  isOpenRef.current = false
-                }}
-              >
-                <Button type='button' className='flex-1' variant='secondary'>
-                  Fechar
-                </Button>
-              </DialogClose>
-              <Button className='flex-1'>Salvar</Button>
+              <div className='flex space-x-4 w-full'>
+                <div className='w-1/2'>
+                  <Label>Cidade</Label>
+                  <Input />
+                </div>
+                <div className='w-1/2'>
+                  <Label>Estado</Label>
+                  <Input />
+                </div>
+              </div>
+              <div>
+                <Label>Professor Docente</Label>
+                <Input />
+              </div>
+              <div>
+                <Label>Data de Inauguração</Label>
+                <Input type='date' className='w-40' />
+              </div>
             </div>
-          </form>
-        </div>
-      </DialogContent>
-    </>
+          ) : (
+            <div className='w-full space-y-2'>
+              <div>
+                <Label>Nome do Núcleo</Label>
+                <Skeleton className='h-9 w-full' />
+              </div>
+              <div>
+                <Label>CEP</Label>
+                <Skeleton className='h-9 w-full' />
+              </div>
+              <div>
+                <Label>Endereço</Label>
+                <Skeleton className='h-9 w-full' />
+              </div>
+              <div className='flex space-x-4 w-full'>
+                <div className='w-1/3'>
+                  <Label>Número</Label>
+                  <Skeleton className='h-9 w-full' />
+                </div>
+                <div className='w-2/3'>
+                  <Label>Complemento</Label>
+                  <Skeleton className='h-9 w-full' />
+                </div>
+              </div>
+              <div className='flex space-x-4 w-full'>
+                <div className='w-1/2'>
+                  <Label>Cidade</Label>
+                  <Skeleton className='h-9 w-full' />
+                </div>
+                <div className='w-1/2'>
+                  <Label>Estado</Label>
+                  <Skeleton className='h-9 w-full' />
+                </div>
+              </div>
+              <div>
+                <Label>Professor Docente</Label>
+                <Skeleton className='h-9 w-full' />
+              </div>
+              <div>
+                <Label>Data de Inauguração</Label>
+                <Skeleton className='h-9 w-40' />
+              </div>
+            </div>
+          )}
+          <div className='flex items-center gap-3'>
+            <DialogClose asChild>
+              <Button type='button' className='flex-1' variant='secondary'>
+                Fechar
+              </Button>
+            </DialogClose>
+            <Button className='flex-1'>Salvar</Button>
+          </div>
+        </form>
+      </div>
+    </DialogContent>
   )
 }

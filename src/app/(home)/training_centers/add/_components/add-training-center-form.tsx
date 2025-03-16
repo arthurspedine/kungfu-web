@@ -91,21 +91,33 @@ export function AddTrainingCenterForm({
   async function handleFormSubmit(data: AddTrainingCenterType) {
     const isValidCep = await validateCep(data.zipCode)
     if (!isValidCep) return
-    const addTrainingCenterRequest = handleAddTrainingCenter(data)
 
-    toast.promise(addTrainingCenterRequest, {
-      loading: 'Cadastrando núcleo...',
-      success: () => {
+    try {
+      const loadingToast = toast.loading('Cadastrando núcleo...')
+
+      const result = await handleAddTrainingCenter(data)
+
+      if (result.success) {
+        toast.dismiss(loadingToast)
+        toast.success('Núcleo cadastrado com sucesso!')
         router.replace('/training_centers')
-        return 'Núcleo cadastrado com sucesso!'
-      },
-      error: err => {
-        if (err.error) return err.error
-        return 'Algo deu errado ao cadastrar o núcleo.'
-      },
-      position: 'top-center',
-      style: { filter: 'none', zIndex: 10 },
-    })
+      } else {
+        toast.dismiss(loadingToast)
+        toast.error(result.message, {
+          position: 'top-center',
+          style: { filter: 'none', zIndex: 10 },
+        })
+      }
+    } catch (e) {
+      // This catch is mainly for client-side errors
+      toast.error(
+        'Erro ao processar o formulário. Por favor, tente novamente mais tarde.',
+        {
+          position: 'top-center',
+          style: { filter: 'none', zIndex: 10 },
+        }
+      )
+    }
   }
 
   return (
@@ -124,9 +136,9 @@ export function AddTrainingCenterForm({
           )}
         </div>
         <div>
-          <Label>Código Postal</Label>
+          <Label>CEP</Label>
           <Input
-            placeholder='Digite o código postal do núcleo'
+            placeholder='Digite o código CEP do núcleo'
             value={currentCep}
             min={0}
             {...register('zipCode', {
@@ -156,58 +168,60 @@ export function AddTrainingCenterForm({
             </p>
           )}
         </div>
-        <div className='flex space-x-4'>
-          <div className='w-1/3'>
-            <Label>Número</Label>
-            {loading ? (
-              <Skeleton className='h-9 w-full' />
-            ) : (
-              <Input
-                value={
-                  getValues('number') === undefined ||
-                  getValues('number') === null
-                    ? 0
-                    : getValues('number')
-                }
-                placeholder='Digite o número do núcleo'
-                disabled={disabledInputs}
-                type='number'
-                {...register('number', {
-                  onChange: e => {
-                    if (e.target.value === '') {
-                      setValue('number', 0, { shouldValidate: true })
-                    } else {
-                      const numValue = Number(e.target.value)
-                      setValue('number', numValue, { shouldValidate: true })
-                    }
-                  },
-                })}
-              />
-            )}
-            {errors.number && (
-              <p className='text-destructive text-sm pt-0.5'>
-                {errors.number.message}
-              </p>
-            )}
+        <div>
+          <div className='flex space-x-4'>
+            <div className='w-1/3'>
+              <Label>Número</Label>
+              {loading ? (
+                <Skeleton className='h-9 w-full' />
+              ) : (
+                <Input
+                  value={
+                    getValues('number') === undefined ||
+                    getValues('number') === null
+                      ? 0
+                      : getValues('number')
+                  }
+                  placeholder='Digite o número do núcleo'
+                  disabled={disabledInputs}
+                  type='number'
+                  {...register('number', {
+                    onChange: e => {
+                      if (e.target.value === '') {
+                        setValue('number', 0, { shouldValidate: true })
+                      } else {
+                        const numValue = Number(e.target.value)
+                        setValue('number', numValue, { shouldValidate: true })
+                      }
+                    },
+                  })}
+                />
+              )}
+            </div>
+            <div className='w-2/3'>
+              <Label>Complemento</Label>
+              {loading ? (
+                <Skeleton className='h-9 w-full' />
+              ) : (
+                <Input
+                  placeholder='Digite o complemento do núcleo'
+                  disabled={disabledInputs}
+                  type='text'
+                  {...register('additionalAddress')}
+                />
+              )}
+              {errors.additionalAddress && (
+                <p className='text-destructive text-sm pt-0.5'>
+                  {errors.additionalAddress.message}
+                </p>
+              )}
+            </div>
           </div>
-          <div className='w-2/3'>
-            <Label>Complemento</Label>
-            {loading ? (
-              <Skeleton className='h-9 w-full' />
-            ) : (
-              <Input
-                placeholder='Digite o complemento do núcleo'
-                disabled={disabledInputs}
-                type='text'
-                {...register('additionalAddress')}
-              />
-            )}
-            {errors.additionalAddress && (
-              <p className='text-destructive text-sm pt-0.5'>
-                {errors.additionalAddress.message}
-              </p>
-            )}
-          </div>
+          {errors.number && (
+            <p className='text-destructive text-sm pt-0.5'>
+              {errors.number.message}
+            </p>
+          )}
         </div>
         <div className='flex space-x-4 w-full'>
           <div className='w-1/2'>

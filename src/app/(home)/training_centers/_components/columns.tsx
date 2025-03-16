@@ -3,22 +3,26 @@
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import type { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, Pen } from 'lucide-react'
 
 export type TrainingCenterData = {
   id: string
   teacher: {
+    id: string
     name: string
   }
   studentsNumber: number
   name: string
-  fullAddress: string
+  street: string
+  number: number
+  additionalAddress: null | string
   city: string
   state: string
   zipCode: string
@@ -45,8 +49,14 @@ export const columns = (
     header: 'Professor Docente',
   },
   {
-    accessorKey: 'fullAddress',
+    id: 'fullAddress',
     header: 'Endereço Completo',
+    cell: ({ row }) => {
+      const { street, number, additionalAddress } = row.original
+      const additionalAddressStr =
+        additionalAddress != null ? `, ${additionalAddress}` : ''
+      return `${street} ${number}${additionalAddressStr}`
+    },
   },
   {
     accessorKey: 'city',
@@ -86,23 +96,27 @@ export const columns = (
       const trainingCenter = row.original
 
       return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DialogTrigger
-                asChild
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={'ghost'}>
+              <EllipsisVertical />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='w-6'>
+            <DialogTrigger className='w-full'>
+              <DropdownMenuItem
                 onClick={() => setSelectedTrainingCenterId(trainingCenter.id)}
               >
-                <Button variant={'ghost'}>
-                  <EllipsisVertical />
-                </Button>
-              </DialogTrigger>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Editar</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+                {/* <Button variant={'ghost'}> */}
+                {/* </Button> */}
+                Editar
+                <DropdownMenuShortcut>
+                  <Pen size={16} />
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
   },

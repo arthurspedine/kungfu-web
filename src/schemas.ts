@@ -46,19 +46,52 @@ export const addTrainingCenterSchema = z.object({
     message: 'O estado é obrigatório.',
   }),
   zipCode: z.string().min(1, {
-    message: 'O código postal é obrigatório.',
+    message: 'O CEP é obrigatório.',
   }),
-  openingDate: z.string().refine(
-    val => {
-      const date = new Date(val)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      return !Number.isNaN(date.getTime()) && date < today
-    },
-    {
-      message: 'Data de inauguração inválida ou no futuro.',
-    }
-  ),
+  openingDate: z
+    .string()
+    .refine(date => date !== null && date.trim() !== '', {
+      message: 'A data de inauguração é obrigatória.',
+    })
+    .refine(
+      date => {
+        const [year, month, day] = date
+          .split('-')
+          .map(num => Number.parseInt(num, 10))
+
+        if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
+          return false
+        }
+        const receivedDate = new Date(year, month - 1, day)
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        const todayDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        )
+
+        return receivedDate < todayDate
+      },
+      { message: 'A data de inauguração deve ser anterior ao dia atual.' }
+    ),
+})
+
+export const editTrainingCenterSchema = addTrainingCenterSchema.extend({
+  closingDate: z
+    .string()
+    .refine(
+      val => {
+        const date = new Date(val)
+        return !Number.isNaN(date.getTime())
+      },
+      { message: 'A data de fechamento precisa ser uma data válida.' }
+    )
+    .optional()
+    .nullable(),
 })
 
 export type AddTrainingCenterType = z.infer<typeof addTrainingCenterSchema>
+export type EditTrainingCenterType = z.infer<typeof editTrainingCenterSchema>

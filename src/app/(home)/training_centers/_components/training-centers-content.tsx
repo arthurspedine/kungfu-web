@@ -3,7 +3,7 @@
 import { Dialog } from '@/components/ui/dialog'
 import { columns, type TrainingCenterData } from './columns'
 import { DataTable } from '@/components/datatable'
-import { EditTrainingCenterDialong } from './edit-training-center'
+import { EditTrainingCenterDialog } from './edit-training-center'
 import { useState } from 'react'
 
 export function TrainingCentersContent({
@@ -23,6 +23,11 @@ export function TrainingCentersContent({
     label: 'Cadastrar Núcleo',
     redirectTo: '/training_centers/add',
   }
+
+  function resetTrainingCenterId() {
+    setSelectedTrainingCenterId('')
+  }
+
   return (
     <Dialog>
       <DataTable<TrainingCenterData, unknown>
@@ -31,7 +36,10 @@ export function TrainingCentersContent({
         buttonConfig={buttonConfig}
         filterHeaders={filterHeaders}
       />
-      <EditTrainingCenterDialong trainingCenterId={selectedTrainingCenterId} />
+      <EditTrainingCenterDialog
+        resetTrainingCenterId={resetTrainingCenterId}
+        trainingCenterId={selectedTrainingCenterId}
+      />
     </Dialog>
   )
 }

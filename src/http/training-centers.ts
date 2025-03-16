@@ -1,5 +1,6 @@
 'use server'
-import type { AddTrainingCenterType } from '@/schemas'
+import type { TrainingCenterType } from '@/schemas'
+import type { ActionResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
 import { cookies } from 'next/headers'
 
@@ -33,7 +34,9 @@ export async function getTrainingCentersList() {
   }
 }
 
-export async function handleAddTrainingCenter(data: AddTrainingCenterType) {
+export async function handleAddTrainingCenter(
+  data: TrainingCenterType
+): Promise<ActionResponse> {
   const c = await cookies()
   try {
     const response = await fetch(
@@ -50,31 +53,36 @@ export async function handleAddTrainingCenter(data: AddTrainingCenterType) {
       }
     )
 
+    const responseData = await response.json()
+
     if (!response.ok) {
-      const errorResponse:
-        | { error: string }
-        | { field: string; message: string }[] = await response.json()
-
-      if (Array.isArray(errorResponse)) {
-        let finalMessage = ''
-
-        for (let index = 0; index < errorResponse.length; index++) {
-          const element = errorResponse[index]
-          finalMessage += `${element.message}\n`
+      if (Array.isArray(responseData)) {
+        return {
+          success: false,
+          message: responseData.map(err => err.message).join('\n'),
         }
-
-        return Promise.reject(new Error(finalMessage))
       }
 
-      return Promise.reject(new Error(errorResponse.error))
+      if (responseData.error) {
+        return {
+          success: false,
+          message: responseData.error,
+        }
+      }
+
+      return {
+        success: false,
+        message: 'Houve um erro ao cadastrar o núcleo.',
+      }
     }
     revalidateTag('training-center-all')
+    return { success: true }
   } catch (e) {
-    console.error(e)
-    return Promise.reject({
-      error:
-        e instanceof Error ? e.message : 'Houve um erro ao cadastrar o núcleo.',
-    })
+    console.error('Server action error:', e)
+    return {
+      success: false,
+      message: 'Houve um erro ao cadastrar o núcleo.',
+    }
   }
 }
 
