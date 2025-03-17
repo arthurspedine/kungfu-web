@@ -93,13 +93,19 @@ export function AddTrainingCenterForm({
     if (!isValidCep) return
 
     try {
-      const loadingToast = toast.loading('Cadastrando núcleo...')
+      const loadingToast = toast.loading('Cadastrando núcleo...', {
+        position: 'top-center',
+        style: { filter: 'none', zIndex: 10 },
+      })
 
       const result = await handleAddTrainingCenter(data)
 
       if (result.success) {
         toast.dismiss(loadingToast)
-        toast.success('Núcleo cadastrado com sucesso!')
+        toast.success('Núcleo cadastrado com sucesso!', {
+          position: 'top-center',
+          style: { filter: 'none', zIndex: 10 },
+        })
         router.replace('/training_centers')
       } else {
         toast.dismiss(loadingToast)
@@ -178,7 +184,7 @@ export function AddTrainingCenterForm({
                 <Input
                   value={
                     getValues('number') === undefined ||
-                    getValues('number') === null
+                      getValues('number') === null
                       ? 0
                       : getValues('number')
                   }

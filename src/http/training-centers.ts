@@ -53,9 +53,8 @@ export async function handleAddTrainingCenter(
       }
     )
 
-    const responseData = await response.json()
-
     if (!response.ok) {
+      const responseData = await response.json()
       if (Array.isArray(responseData)) {
         return {
           success: false,
