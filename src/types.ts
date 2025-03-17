@@ -28,3 +28,13 @@ export type SuccessResponse = {
 }
 
 export type ActionResponse = ErrorResponse | SuccessResponse
+
+export type StudentInfo = {
+  id: string
+  name: string
+  birthDate: string
+  age: number
+  sex: string
+  currentBelt: string
+  beltAgeMonths: number
+}

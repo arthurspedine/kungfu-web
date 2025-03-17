@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 export default async function AddTrainingCentersPage() {
   const c = await cookies()
   const listAllTeachers = await fetch(
-    `${process.env.BACKEND_URL}/user/list-all`,
+    `${process.env.BACKEND_URL}/user/list/all`,
     {
       credentials: 'include',
       headers: {

@@ -110,9 +110,11 @@ export const columns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'}>
-              <EllipsisVertical />
-            </Button>
+            <div className='text-right'>
+              <Button variant={'ghost'}>
+                <EllipsisVertical />
+              </Button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className='w-6'>
             <DialogTrigger className='w-full'>
