@@ -14,7 +14,7 @@ const SelectValue = SelectPrimitive.Value
 
 type SelectTriggerProps = {
   header?: string
-  size: '36' | '48'
+  size?: '36' | '48'
 } & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 
 const SelectTrigger = React.forwardRef<

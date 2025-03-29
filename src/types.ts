@@ -38,3 +38,7 @@ export type StudentInfo = {
   currentBelt: string
   beltAgeMonths: number
 }
+
+export type RequestBeltType = {
+  [key: string]: string
+}
