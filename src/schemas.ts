@@ -106,7 +106,7 @@ export const addStudentSchema = z.object({
         threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3)
         return parsedDate <= threeYearsAgo
       },
-      { message: 'Data de nascimento inválida' }
+      { message: 'Data de nascimento inválida.' }
     ),
     sex: z.enum(['M', 'F'], {
       errorMap: () => ({ message: 'O sexo é obrigatório.' }),
@@ -116,12 +116,29 @@ export const addStudentSchema = z.object({
     .array(
       z.object({
         type: z.string().min(1, { message: 'Selecione a faixa' }),
-        acquisitionDate: z
+        achievedDate: z
           .string()
-          .min(1, { message: 'Data da faixa é obrigatória' }),
+          .refine(date => date !== null && date.trim() !== '', {
+            message: 'A data de início da faixa é obrigatória.',
+          })
+          .refine(
+            val => {
+              const date = new Date(val)
+              return !Number.isNaN(date.getTime()) && date < new Date()
+            },
+            {
+              message: 'A data de início da faixa não pode ser no futuro.',
+            }
+          ),
       })
     )
     .min(1, { message: 'Adicione pelo menos uma faixa' }),
+  trainingCenterId: z
+    .string()
+    .uuid({
+      message: 'O núcleo é obrigatório.',
+    })
+    .default(''),
 })
 
 export type AddStudentType = z.infer<typeof addStudentSchema>

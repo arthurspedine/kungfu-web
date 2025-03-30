@@ -16,17 +16,21 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { listAllBelts } from '@/http/belts'
-import { addStudentSchema, type AddStudentType } from '@/schemas'
-import type { RequestBeltType } from '@/types'
+import { handleAddStudent } from '@/http/students'
+import { type AddStudentType, addStudentSchema } from '@/schemas'
+import type { RequestBeltType, TrainingCenterSimpleInfo } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarFold, Trash } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { validateBeltSequence } from './validate-belt-sequence'
+import { TrainingCenterCombobox } from './training-center-combobox'
 
-export function AddStudentForm() {
-  const [studentBelts, setStudentBelts] = useState()
+export function AddStudentForm({
+  trainingCenters,
+}: { trainingCenters: TrainingCenterSimpleInfo[] }) {
   const [beltTypes, setBeltTypes] = useState<RequestBeltType[]>([])
 
   useEffect(() => {
@@ -48,12 +52,13 @@ export function AddStudentForm() {
     formState: { errors },
     control,
     setValue,
+    getValues,
     watch,
     clearErrors,
   } = useForm<AddStudentType>({
     resolver: zodResolver(addStudentSchema),
     defaultValues: {
-      belts: [{ type: '', acquisitionDate: '' }],
+      belts: [{ type: '', achievedDate: '' }],
     },
   })
 
@@ -68,12 +73,29 @@ export function AddStudentForm() {
   }
 
   function handleFormSubmit(data: AddStudentType) {
-    console.log(data)
-  }
+    const validationResult = validateBeltSequence(data.belts, beltTypes)
+    if (!validationResult.isValid) {
+      toast.error(validationResult.message, {
+        position: 'top-center',
+        duration: 10 * 1000, // 10 seconds
+        style: { filter: 'none', zIndex: 10 },
+      })
+    }
 
-  useEffect(() => {
-    console.log(errors.belts)
-  }, [errors])
+    const handleRequest = handleAddStudent(data)
+    toast.promise(handleRequest, {
+      loading: 'Verificando credenciais...',
+      success: () => {
+        setTimeout(() => {
+          redirect('/students')
+        }, 1000)
+        return 'Aluno cadastrado com sucesso!'
+      },
+      error: 'Algo deu errado. Por favor, tente novamente.',
+      position: 'top-center',
+      style: { filter: 'none', zIndex: 10 },
+    })
+  }
 
   return (
     <form
@@ -126,6 +148,19 @@ export function AddStudentForm() {
             </p>
           )}
         </div>
+        <div className='w-full'>
+          <Label className='text-nowrap'>Núcleo</Label>
+          <TrainingCenterCombobox
+            setValue={setValue}
+            clearErrors={clearErrors}
+            trainingCenterList={trainingCenters}
+          />
+          {errors.trainingCenterId && (
+            <p className='text-destructive text-sm pt-0.5 text-nowrap'>
+              {errors.trainingCenterId.message}
+            </p>
+          )}
+        </div>
       </div>
       <h2 className='font-bold'>Faixas</h2>
       {/* FAIXA CARD */}
@@ -140,6 +175,7 @@ export function AddStudentForm() {
                   clearErrors(`belts.${index}.type`)
                 }}
                 value={watch(`belts.${index}.type`) || ''}
+                defaultOpen={getValues('belts').length > 1}
               >
                 <SelectTrigger className='w-60'>
                   <SelectValue placeholder='Selecione a faixa' />
@@ -148,11 +184,23 @@ export function AddStudentForm() {
                   {beltTypes.map(belt => {
                     const beltType = Object.keys(belt)[0]
                     const beltLabel = belt[beltType]
-                    return (
-                      <SelectItem key={beltType} value={beltType}>
-                        {beltLabel}
-                      </SelectItem>
+
+                    const isAlreadySelected = getValues('belts').some(
+                      (selectedBelt, i) =>
+                        selectedBelt.type === beltType && i !== index
                     )
+
+                    if (
+                      !isAlreadySelected ||
+                      watch(`belts.${index}.type`) === beltType
+                    ) {
+                      return (
+                        <SelectItem key={beltType} value={beltType}>
+                          {beltLabel}
+                        </SelectItem>
+                      )
+                    }
+                    return null
                   })}
                 </SelectContent>
               </Select>
@@ -169,11 +217,12 @@ export function AddStudentForm() {
               <Input
                 type='date'
                 placeholder='Digite a data de nascimento do aluno'
-                {...register(`belts.${index}.acquisitionDate`)}
+                className='w-fit'
+                {...register(`belts.${index}.achievedDate`)}
               />
-              {errors.belts?.[index]?.acquisitionDate && (
+              {errors.belts?.[index]?.achievedDate && (
                 <p className='text-destructive text-sm pt-0.5 text-nowrap'>
-                  {errors.belts?.[index].acquisitionDate?.message}
+                  {errors.belts?.[index].achievedDate?.message}
                 </p>
               )}
             </div>
@@ -189,10 +238,9 @@ export function AddStudentForm() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side='bottom'>
-                    <p>
-                      A data de término da faixa é definida a partir do início
-                      da próxima faixa.
-                    </p>
+                    <p>A data de término da faixa definido pelo </p>
+                    <p>início da próxima faixa se for seguido</p>
+                    <p>a sequência correta.</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -219,11 +267,23 @@ export function AddStudentForm() {
         variant={'link'}
         className='w-fit text-blue-600 underline p-0'
         type='button'
-        onClick={() => append({ type: '', acquisitionDate: '' })}
+        onClick={() => append({ type: '', achievedDate: '' })}
       >
         Novo cadastro de faixa
       </Button>
-      <Button variant={'green'}>Salvar Aluno</Button>
+      <div className='flex gap-4'>
+        <Button
+          variant={'outline'}
+          className='grow'
+          type='button'
+          onClick={() => redirect('/students')}
+        >
+          Cancelar
+        </Button>
+        <Button variant={'green'} className='grow'>
+          Salvar Aluno
+        </Button>
+      </div>
     </form>
   )
 }

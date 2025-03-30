@@ -1,6 +1,4 @@
 'use client'
-
-import * as React from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -19,29 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
-
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-]
+import { useState } from 'react'
 
 export function TeacherCombobox({
   setValue,
@@ -72,8 +48,8 @@ export function TeacherCombobox({
   }>
   teachersList: { id: string; name: string }[]
 }) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setComboBoxValue] = React.useState('')
+  const [open, setOpen] = useState(false)
+  const [value, setComboboxValue] = useState('')
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -100,7 +76,7 @@ export function TeacherCombobox({
                   key={teacher.id}
                   value={teacher.name}
                   onSelect={() => {
-                    setComboBoxValue(teacher.id)
+                    setComboboxValue(teacher.id)
                     setValue('teacherId', teacher.id)
                     clearErrors('teacherId')
                     setOpen(false)

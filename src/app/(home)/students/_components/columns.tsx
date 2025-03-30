@@ -10,7 +10,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
   {
     id: 'id',
     cell: ({ row }) => {
-      return <div className='w-12'>{row.index + 1000}</div>
+      return <div className='w-12'>{row.index + 1}</div>
     },
     header: 'ID',
   },

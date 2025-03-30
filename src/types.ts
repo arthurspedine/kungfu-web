@@ -42,3 +42,9 @@ export type StudentInfo = {
 export type RequestBeltType = {
   [key: string]: string
 }
+
+export type TrainingCenterSimpleInfo = {
+  id: string
+  name: string
+  teacherName: string
+}

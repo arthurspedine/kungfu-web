@@ -111,3 +111,29 @@ export async function getTrainingCenterInfo(trainingCenterId: string) {
     return null
   }
 }
+
+export async function listAllTrainingCentersInfo() {
+  const c = await cookies()
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/training-center/all/info`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          Cookie: c.toString(),
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Houve um erro ao listar todos os núcleos.')
+    }
+
+    return await response.json()
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}

@@ -1,6 +1,6 @@
-import { Button } from '../ui/button'
 import { Plus, X } from 'lucide-react'
 import { redirect } from 'next/navigation'
+import { Button } from '../ui/button'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
 import type { ButtonConfigProps, DataTableToolbarProps } from './interfaces'
 

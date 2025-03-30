@@ -1,7 +1,7 @@
 import { Title } from '@/components/title'
-import { StudentsContent } from './_components/students-content'
 import { listAllStudents } from '@/http/students'
 import type { StudentInfo } from '@/types'
+import { StudentsContent } from './_components/students-content'
 
 export default async function StudentsPage() {
   const studentsList: StudentInfo[] = await listAllStudents()

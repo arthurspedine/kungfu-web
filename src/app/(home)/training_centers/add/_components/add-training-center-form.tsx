@@ -1,18 +1,18 @@
 'use client'
 
 import { Label } from '@/components/label'
-import { Input } from '@/components/ui/input'
-import { TeacherCombobox } from './teacher-combobox'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
-import type { ViaCEPType } from '@/types'
-import { useForm } from 'react-hook-form'
-import { addTrainingCenterSchema, type AddTrainingCenterType } from '@/schemas'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { handleAddTrainingCenter } from '@/http/training-centers'
+import { type AddTrainingCenterType, addTrainingCenterSchema } from '@/schemas'
+import type { ViaCEPType } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { TeacherCombobox } from './teacher-combobox'
 
 export function AddTrainingCenterForm({
   teachers,
