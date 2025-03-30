@@ -81,6 +81,7 @@ export function AddStudentForm({
         duration: 10 * 1000, // 10 seconds
         style: { filter: 'none', zIndex: 10 },
       })
+      return
     }
 
     const handleRequest = handleAddStudent(data)
