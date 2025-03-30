@@ -95,3 +95,50 @@ export const editTrainingCenterSchema = addTrainingCenterSchema.extend({
 
 export type AddTrainingCenterType = z.infer<typeof addTrainingCenterSchema>
 export type EditTrainingCenterType = z.infer<typeof editTrainingCenterSchema>
+
+export const addStudentSchema = z.object({
+  student: z.object({
+    name: z.string().min(2, { message: 'Nome completo é obrigatório.' }),
+    birthDate: z.string().refine(
+      date => {
+        const parsedDate = new Date(date)
+        const threeYearsAgo = new Date()
+        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3)
+        return parsedDate <= threeYearsAgo
+      },
+      { message: 'Data de nascimento inválida.' }
+    ),
+    sex: z.enum(['M', 'F'], {
+      errorMap: () => ({ message: 'O sexo é obrigatório.' }),
+    }),
+  }),
+  belts: z
+    .array(
+      z.object({
+        type: z.string().min(1, { message: 'Selecione a faixa' }),
+        achievedDate: z
+          .string()
+          .refine(date => date !== null && date.trim() !== '', {
+            message: 'A data de início da faixa é obrigatória.',
+          })
+          .refine(
+            val => {
+              const date = new Date(val)
+              return !Number.isNaN(date.getTime()) && date < new Date()
+            },
+            {
+              message: 'A data de início da faixa não pode ser no futuro.',
+            }
+          ),
+      })
+    )
+    .min(1, { message: 'Adicione pelo menos uma faixa' }),
+  trainingCenterId: z
+    .string()
+    .uuid({
+      message: 'O núcleo é obrigatório.',
+    })
+    .default(''),
+})
+
+export type AddStudentType = z.infer<typeof addStudentSchema>

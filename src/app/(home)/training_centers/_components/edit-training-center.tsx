@@ -1,4 +1,5 @@
 'use client'
+import { Label } from '@/components/label'
 import { Button } from '@/components/ui/button'
 import {
   DialogClose,
@@ -6,20 +7,19 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { getTrainingCenterInfo } from '@/http/training-centers'
+import {
+  type EditTrainingCenterType,
+  editTrainingCenterSchema,
+} from '@/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import type { TrainingCenterData } from './columns'
-import { getTrainingCenterInfo } from '@/http/training-centers'
-import { Skeleton } from '@/components/ui/skeleton'
-import { toast } from 'sonner'
-import { Label } from '@/components/label'
-import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  editTrainingCenterSchema,
-  type EditTrainingCenterType,
-} from '@/schemas'
+import { toast } from 'sonner'
+import type { TrainingCenterData } from './columns'
 
 export function EditTrainingCenterDialog({
   trainingCenterId,

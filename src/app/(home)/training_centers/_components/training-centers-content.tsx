@@ -1,10 +1,10 @@
 'use client'
 
-import { Dialog } from '@/components/ui/dialog'
-import { columns, type TrainingCenterData } from './columns'
 import { DataTable } from '@/components/datatable/data-table'
-import { EditTrainingCenterDialog } from './edit-training-center'
+import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { type TrainingCenterData, columns } from './columns'
+import { EditTrainingCenterDialog } from './edit-training-center'
 
 export function TrainingCentersContent({
   trainingCenters,

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Toaster } from 'sonner'
 import icon from '&/public/favicon.ico'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Kung Fu Taishan',

@@ -1,6 +1,6 @@
 import { Title } from '@/components/title'
-import { AddTrainingCenterForm } from './_components/add-training-center-form'
 import { cookies } from 'next/headers'
+import { AddTrainingCenterForm } from './_components/add-training-center-form'
 
 export default async function AddTrainingCentersPage() {
   const c = await cookies()
