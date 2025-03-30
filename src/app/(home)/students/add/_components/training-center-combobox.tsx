@@ -62,7 +62,7 @@ export function TrainingCenterCombobox({
         <Button
           variant={'outline'}
           aria-expanded={open}
-          className='w-80 justify-between text-muted-foreground font-normal'
+          className='w-full justify-between text-muted-foreground font-normal'
         >
           {value
             ? trainingCenterList.find(
@@ -89,7 +89,7 @@ export function TrainingCenterCombobox({
                     clearErrors('trainingCenterId')
                     setOpen(false)
                   }}
-                  className='text-nowrap flex items-center'
+                  className='text-nowrap flex items-center cursor-pointer'
                 >
                   <Check
                     className={cn(

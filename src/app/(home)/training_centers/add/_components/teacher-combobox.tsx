@@ -81,7 +81,7 @@ export function TeacherCombobox({
                     clearErrors('teacherId')
                     setOpen(false)
                   }}
-                  className='text-nowrap'
+                  className='text-nowrap cursor-pointer'
                 >
                   <Check
                     className={cn(
