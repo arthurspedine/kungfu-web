@@ -13,6 +13,7 @@ export function DataTableToolbar<TData>({
     filterColumns: {
       id: string
       label: string
+      mapFunction?: (value: string) => { label: string }
     }[]
   }) {
   const isFiltered = table.getState().columnFilters.length > 0
@@ -34,6 +35,7 @@ export function DataTableToolbar<TData>({
                 key={c.id}
                 column={tableColumn}
                 title={c.label}
+                mapFunction={c.mapFunction}
               />
             )
         })}

@@ -55,3 +55,11 @@ export const beltMap = {
     textColor: '#ffffff',
   },
 } as const
+
+export function mapBeltValue(value: string) {
+  const mappedKey: keyof typeof beltMap = value
+    .toLowerCase()
+    .replace(/(\d)([A-Z])/g, '$1$2'.toLowerCase())
+    .replace(/_/g, '') as keyof typeof beltMap
+  return beltMap[mappedKey]
+}

@@ -17,11 +17,13 @@ import { Separator } from '../ui/separator'
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>
   title?: string
+  mapFunction?: (value: string) => { label: string }
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
+  mapFunction,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues()
   const selectedValues = new Set(column?.getFilterValue() as string[])
@@ -57,10 +59,13 @@ export function DataTableFacetedFilter<TData, TValue>({
             <CommandEmpty>Sem resultados.</CommandEmpty>
             <CommandGroup>
               {options.map(option => {
+                const mappedValue = mapFunction
+                  ? mapFunction(option.label).label
+                  : option.label
                 const isSelected = selectedValues.has(option.value)
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={mappedValue}
                     onSelect={() => {
                       if (isSelected) {
                         selectedValues.delete(option.value)
@@ -87,7 +92,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     >
                       <Check className={isSelected ? 'visible' : 'invisible'} />
                     </div>
-                    <span className='text-nowrap'>{option.label}</span>
+                    <span className='text-nowrap'>{mappedValue}</span>
                     {option.count && (
                       <span className='ml-auto flex h-4 w-4 items-center justify-center text-xs'>
                         {option.count}
