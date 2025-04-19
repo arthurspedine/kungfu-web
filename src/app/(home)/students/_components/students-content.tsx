@@ -15,7 +15,7 @@ export function StudentsContent({ students }: { students: StudentInfo[] }) {
     { id: 'trainingCenter', label: 'Núcleo' },
     { id: 'name', label: 'Aluno' },
     { id: 'sex', label: 'Sexo', mapFunction: mapStudentSex },
-    { id: 'currentBelt', label: 'Faixa atual', mapFunction: mapBeltValue },
+    { id: 'currentBelt', label: 'Faixa', mapFunction: mapBeltValue },
   ]
 
   return (

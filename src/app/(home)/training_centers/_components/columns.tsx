@@ -121,8 +121,6 @@ export const columns = (
               <DropdownMenuItem
                 onClick={() => setSelectedTrainingCenterId(trainingCenter.id)}
               >
-                {/* <Button variant={'ghost'}> */}
-                {/* </Button> */}
                 Editar
                 <DropdownMenuShortcut>
                   <Pen size={16} />

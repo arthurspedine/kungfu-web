@@ -59,3 +59,29 @@ export async function handleAddStudent(data: AddStudentType) {
     throw new Error('Houve um erro ao cadastrar o aluno.')
   }
 }
+
+export async function getStudentDetails(studentId: string) {
+  const c = await cookies()
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/student/details/${studentId}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          Cookie: c.toString(),
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Houve um erro ao buscar as informações do aluno.')
+    }
+
+    return await response.json()
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}

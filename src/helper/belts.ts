@@ -1,3 +1,6 @@
+import type { BeltKey, BeltOutput, StudentDetails } from '@/types'
+import { formatDate } from './formatDate'
+
 export const beltMap = {
   white: { label: 'Branca', color: '#ffffff', textColor: '#000000' },
   blue: { label: 'Azul', color: '#1e88e5', textColor: '#ffffff' },
@@ -62,4 +65,109 @@ export function mapBeltValue(value: string) {
     .replace(/(\d)([A-Z])/g, '$1$2'.toLowerCase())
     .replace(/_/g, '') as keyof typeof beltMap
   return beltMap[mappedKey]
+}
+
+export function calculateBeltDuration(value: number): string {
+  const years = Math.floor(value / 12)
+  const months = value % 12
+
+  const yearsPlural = years === 1 ? 'ano' : 'anos'
+  const monthsPlural = months === 1 ? 'mês' : 'meses'
+  let finalMessage = ''
+
+  if (years > 0) {
+    // "mês" se for 1, "meses" se for maior que 1
+
+    finalMessage =
+      months > 0
+        ? `${years} ${yearsPlural} e ${months} ${monthsPlural}`
+        : `${years} ${yearsPlural}`
+  } else {
+    finalMessage = `${months} ${monthsPlural}`
+  }
+  return finalMessage
+}
+
+export function proccessStudentBelts(data: StudentDetails) {
+  const { belts } = data
+
+  const sortedBelts = [...belts].sort((a, b) => {
+    return (
+      new Date(a.achievedDate).getTime() - new Date(b.achievedDate).getTime()
+    )
+  })
+
+  const validBeltOrder = Object.keys(beltMap) as BeltKey[]
+
+  const mappedBelts = sortedBelts.map((belt, index) => {
+    const beltKey = belt.name.toLowerCase()
+
+    const nextBelt = sortedBelts[index + 1]
+
+    let durationMonths: number | null = null
+
+    if (nextBelt) {
+      const startDate = new Date(belt.achievedDate)
+      const finishDate = new Date(nextBelt.achievedDate)
+
+      const monthsDiff =
+        (finishDate.getFullYear() - startDate.getFullYear()) * 12 +
+        (finishDate.getMonth() - startDate.getMonth())
+
+      durationMonths = monthsDiff
+    } else {
+      const startDate = new Date(belt.achievedDate)
+      const today = new Date()
+
+      const monthsDiff =
+        (today.getFullYear() - startDate.getFullYear()) * 12 +
+        (today.getMonth() - startDate.getMonth())
+
+      durationMonths = monthsDiff
+    }
+
+    let isValid = true
+
+    if (index > 0) {
+      const prevBelt = sortedBelts[index - 1]
+      const prevBeltKey = prevBelt.name.toLowerCase()
+
+      const currentBeltIndex = validBeltOrder.findIndex(
+        key => key.toLowerCase() === beltKey
+      )
+      const prevBeltIndex = validBeltOrder.findIndex(
+        key => key.toLowerCase() === prevBeltKey
+      )
+
+      if (
+        currentBeltIndex !== -1 &&
+        prevBeltIndex !== -1 &&
+        currentBeltIndex <= prevBeltIndex
+      ) {
+        isValid = false
+      }
+    }
+
+    let beltDuration: string | null = null
+
+    if (durationMonths !== null) {
+      beltDuration = calculateBeltDuration(durationMonths)
+      if (!isValid) {
+        beltDuration += ' (sequência inválida)'
+      }
+    }
+
+    const formattedAchievedDate = formatDate(belt.achievedDate)
+
+    return {
+      name: belt.name,
+      achievedDate: formattedAchievedDate,
+      beltDuration,
+    } as BeltOutput
+  })
+
+  return {
+    ...data,
+    belts: mappedBelts,
+  }
 }

@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import type { beltMap } from './helper/belts'
 
 export type NavigationProp = {
   id: number
@@ -47,4 +48,38 @@ export type TrainingCenterSimpleInfo = {
   id: string
   name: string
   teacherName: string
+}
+
+export type BeltMapType = typeof beltMap
+export type BeltKey = keyof BeltMapType
+
+export type BeltInput = {
+  name: string
+  achievedDate: string
+}
+
+export type BeltOutput = {
+  name: string
+  achievedDate: string
+  beltDuration: string | null
+}
+
+export type StudentDetails = {
+  id: string
+  student: {
+    name: string
+    birthDate: string
+    sex: string
+  }
+  belts: BeltInput[]
+}
+
+export type ProcessedStudentDetails = {
+  id: string
+  student: {
+    name: string
+    birthDate: string
+    sex: string
+  }
+  belts: BeltOutput[]
 }

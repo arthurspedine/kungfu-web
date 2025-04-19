@@ -1,11 +1,9 @@
 'use client'
-
-import { Button } from '@/components/ui/button'
-import { mapBeltValue } from '@/helper/belts'
+import { calculateBeltDuration, mapBeltValue } from '@/helper/belts'
 import { mapStudentSex } from '@/helper/studentSex'
 import type { StudentInfo } from '@/types'
 import type { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
+import { EditStudentDialog } from './edit-student-dialog'
 
 export const columns: ColumnDef<StudentInfo>[] = [
   {
@@ -74,24 +72,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
     header: 'Tempo de Faixa',
     cell: ({ row }) => {
       const value: number = row.getValue('beltAgeMonths')
-      const years = Math.floor(value / 12)
-      const months = value % 12
-
-      const yearsPlural = years === 1 ? 'ano' : 'anos'
-      const monthsPlural = months === 1 ? 'mês' : 'meses'
-      let finalMessage = ''
-
-      if (years > 0) {
-        // "mês" se for 1, "meses" se for maior que 1
-
-        finalMessage =
-          months > 0
-            ? `${years} ${yearsPlural} e ${months} ${monthsPlural}`
-            : `${years} ${yearsPlural}`
-      } else {
-        finalMessage = `${months} ${monthsPlural}`
-      }
-      return <div>{finalMessage}</div>
+      return <div>{calculateBeltDuration(value)}</div>
     },
   },
   {
@@ -100,9 +81,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
       const student = row.original
       return (
         <div className='text-right'>
-          <Button variant={'ghost'}>
-            <EllipsisVertical />
-          </Button>
+          <EditStudentDialog studentId={student.id} />
         </div>
       )
     },
