@@ -4,67 +4,77 @@ import { formatDate } from './formatDate'
 export const beltMap = {
   white: { label: 'Branca', color: '#ffffff', textColor: '#000000' },
   blue: { label: 'Azul', color: '#1e88e5', textColor: '#ffffff' },
-  bluegrade: { label: 'Azul-Grau', color: '#0d47a1', textColor: '#ffffff' },
+  blue_grade: { label: 'Azul-Grau', color: '#0d47a1', textColor: '#ffffff' },
   yellow: { label: 'Amarela', color: '#fdd835', textColor: '#000000' },
-  yellowgrade: {
+  yellow_grade: {
     label: 'Amarela-Grau',
     color: '#f9a825',
     textColor: '#000000',
   },
   orange: { label: 'Laranja', color: '#ff9800', textColor: '#000000' },
-  orangegrade: {
+  orange_grade: {
     label: 'Laranja-Grau',
     color: '#e65100',
     textColor: '#ffffff',
   },
   green: { label: 'Verde', color: '#43a047', textColor: '#ffffff' },
-  greengrade: { label: 'Verde-Grau', color: '#1b5e20', textColor: '#ffffff' },
+  green_grade: { label: 'Verde-Grau', color: '#1b5e20', textColor: '#ffffff' },
   brown: { label: 'Marrom', color: '#795548', textColor: '#ffffff' },
-  browngrade: { label: 'Marrom-Grau', color: '#4e342e', textColor: '#ffffff' },
+  brown_grade: { label: 'Marrom-Grau', color: '#4e342e', textColor: '#ffffff' },
   black: { label: 'Preta', color: '#000000', textColor: '#ffffff' },
-  black1grade: {
+  black_1_grade: {
     label: 'Preta 1° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black2grade: {
+  black_2_grade: {
     label: 'Preta 2° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black3grade: {
+  black_3_grade: {
     label: 'Preta 3° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black4grade: {
+  black_4_grade: {
     label: 'Preta 4° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black5grade: {
+  black_5_grade: {
     label: 'Preta 5° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black6grade: {
+  black_6_grade: {
     label: 'Preta 6° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
-  black7grade: {
+  black_7_grade: {
     label: 'Preta 7° Grau',
     color: '#000000',
     textColor: '#ffffff',
   },
 } as const
 
-export function mapBeltValue(value: string) {
-  const mappedKey: keyof typeof beltMap = value
+export function mapBeltKeyToValue(key: string) {
+  const mappedKey: keyof typeof beltMap = key
     .toLowerCase()
-    .replace(/(\d)([A-Z])/g, '$1$2'.toLowerCase())
-    .replace(/_/g, '') as keyof typeof beltMap
+    .replace(/(\d)([A-Z])/g, '$1$2'.toLowerCase()) as keyof typeof beltMap
   return beltMap[mappedKey]
+}
+
+export function mapBeltValueToKey(
+  value: string
+): keyof typeof beltMap | undefined {
+  for (const [key, v] of Object.entries(beltMap)) {
+    if (v.label === value) {
+      return key as keyof typeof beltMap
+    }
+  }
+  return undefined
 }
 
 export function calculateBeltDuration(value: number): string {

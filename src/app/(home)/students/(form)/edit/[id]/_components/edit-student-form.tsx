@@ -16,23 +16,37 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { listAllBelts } from '@/http/belts'
-import { handleAddStudent } from '@/http/students'
-import { type AddStudentType, addStudentSchema } from '@/schemas'
-import type { RequestBeltType, TrainingCenterSimpleInfo } from '@/types'
+import { type FormStudentType, formStudentSchema } from '@/schemas'
+import type {
+  RequestBeltType,
+  TrainingCenterSimpleInfo,
+  StudentDetails,
+} from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarFold, Trash } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { validateBeltSequence } from './validate-belt-sequence'
-import { TrainingCenterCombobox } from './training-center-combobox'
 import { Separator } from '@/components/ui/separator'
+import { validateBeltSequence } from '../../../validate-belt-sequence'
+import { TrainingCenterCombobox } from '../../../_components/training-center-combobox'
+import { mapBeltValueToKey } from '@/helper/belts'
+import { handleUpdateStudent } from '@/http/students'
 
-export function AddStudentForm({
+export function EditStudentForm({
+  studentData,
   trainingCenters,
-}: { trainingCenters: TrainingCenterSimpleInfo[] }) {
+}: {
+  studentData: StudentDetails
+  trainingCenters: TrainingCenterSimpleInfo[]
+}) {
   const [beltTypes, setBeltTypes] = useState<RequestBeltType[]>([])
+
+  const formattedBelts = studentData.belts.map(belt => ({
+    type: mapBeltValueToKey(belt.name)?.toLocaleUpperCase(),
+    achievedDate: belt.achievedDate,
+  }))
 
   useEffect(() => {
     const fetchBeltTypes = async () => {
@@ -56,10 +70,19 @@ export function AddStudentForm({
     getValues,
     watch,
     clearErrors,
-  } = useForm<AddStudentType>({
-    resolver: zodResolver(addStudentSchema),
+  } = useForm<FormStudentType>({
+    resolver: zodResolver(formStudentSchema),
     defaultValues: {
-      belts: [{ type: '', achievedDate: '' }],
+      student: {
+        name: studentData.student.name,
+        birthDate: studentData.student.birthDate,
+        sex: studentData.student.sex as 'M' | 'F',
+      },
+      belts:
+        formattedBelts.length > 0
+          ? formattedBelts
+          : [{ type: '', achievedDate: '' }],
+      trainingCenterId: '',
     },
   })
 
@@ -73,7 +96,7 @@ export function AddStudentForm({
     clearErrors('student.sex')
   }
 
-  function handleFormSubmit(data: AddStudentType) {
+  function handleFormSubmit(data: FormStudentType) {
     const validationResult = validateBeltSequence(data.belts, beltTypes)
     if (!validationResult.isValid) {
       toast.error(validationResult.message, {
@@ -83,15 +106,14 @@ export function AddStudentForm({
       })
       return
     }
-
-    const handleRequest = handleAddStudent(data)
+    const handleRequest = handleUpdateStudent(studentData.id, data)
     toast.promise(handleRequest, {
-      loading: 'Verificando credenciais...',
+      loading: 'Atualizando informações...',
       success: () => {
         setTimeout(() => {
           redirect('/students')
-        }, 1000)
-        return 'Aluno cadastrado com sucesso!'
+        }, 500)
+        return 'Aluno atualizado com sucesso!'
       },
       error: 'Algo deu errado. Por favor, tente novamente.',
       position: 'top-center',
@@ -122,6 +144,7 @@ export function AddStudentForm({
           <Select
             onValueChange={setSexValue}
             value={watch('student.sex') || ''}
+            defaultValue={studentData.student.sex}
           >
             <SelectTrigger>
               <SelectValue placeholder='Selecione o sexo do aluno' />
@@ -156,6 +179,7 @@ export function AddStudentForm({
             setValue={setValue}
             clearErrors={clearErrors}
             trainingCenterList={trainingCenters}
+            initialValue={studentData.trainingCenterId}
           />
           {errors.trainingCenterId && (
             <p className='text-destructive text-sm pt-0.5 text-nowrap'>
@@ -180,7 +204,6 @@ export function AddStudentForm({
                     clearErrors(`belts.${index}.type`)
                   }}
                   value={watch(`belts.${index}.type`) || ''}
-                  defaultOpen={getValues('belts').length > 1}
                 >
                   <SelectTrigger className='w-full lg:w-60'>
                     <SelectValue placeholder='Selecione a faixa' />
@@ -289,7 +312,7 @@ export function AddStudentForm({
           Cancelar
         </Button>
         <Button variant={'green'} className='grow'>
-          Salvar Aluno
+          Atualizar Aluno
         </Button>
       </div>
     </form>

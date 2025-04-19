@@ -2,7 +2,7 @@
 import { DataTable } from '@/components/datatable/data-table'
 import type { StudentInfo } from '@/types'
 import { columns } from './columns'
-import { mapBeltValue } from '@/helper/belts'
+import { mapBeltKeyToValue } from '@/helper/belts'
 import { mapStudentSex } from '@/helper/studentSex'
 
 export function StudentsContent({ students }: { students: StudentInfo[] }) {
@@ -15,7 +15,7 @@ export function StudentsContent({ students }: { students: StudentInfo[] }) {
     { id: 'trainingCenter', label: 'Núcleo' },
     { id: 'name', label: 'Aluno' },
     { id: 'sex', label: 'Sexo', mapFunction: mapStudentSex },
-    { id: 'currentBelt', label: 'Faixa', mapFunction: mapBeltValue },
+    { id: 'currentBelt', label: 'Faixa', mapFunction: mapBeltKeyToValue },
   ]
 
   return (

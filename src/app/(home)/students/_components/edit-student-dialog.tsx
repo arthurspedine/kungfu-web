@@ -25,6 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { proccessStudentBelts } from '@/helper/belts'
+import { formatDate } from '@/helper/formatDate'
 import { getStudentDetails } from '@/http/students'
 import type { ProcessedStudentDetails, StudentDetails } from '@/types'
 import { BookUser, EllipsisVertical, Pen, X } from 'lucide-react'
@@ -116,7 +117,7 @@ export function EditStudentDialog({ studentId }: { studentId: string }) {
                 <div className='space-y-2'>
                   <p className='text-muted-foreground'>Data de Nascimento</p>
                   <span className='font-medium'>
-                    {student.student.birthDate}
+                    {formatDate(student.student.birthDate)}
                   </span>
                 </div>
                 <div className='space-y-2'>

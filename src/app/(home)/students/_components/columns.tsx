@@ -1,5 +1,5 @@
 'use client'
-import { calculateBeltDuration, mapBeltValue } from '@/helper/belts'
+import { calculateBeltDuration, mapBeltKeyToValue } from '@/helper/belts'
 import { mapStudentSex } from '@/helper/studentSex'
 import type { StudentInfo } from '@/types'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -49,7 +49,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
     header: 'Faixa',
     cell: ({ row }) => {
       const value: string = row.getValue('currentBelt')
-      const currentBelt = mapBeltValue(value)
+      const currentBelt = mapBeltKeyToValue(value)
       return (
         <div
           style={{

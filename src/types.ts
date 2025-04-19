@@ -72,6 +72,7 @@ export type StudentDetails = {
     sex: string
   }
   belts: BeltInput[]
+  trainingCenterId: string
 }
 
 export type ProcessedStudentDetails = {

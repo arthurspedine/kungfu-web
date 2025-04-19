@@ -1,6 +1,6 @@
 'use server'
 
-import type { AddStudentType } from '@/schemas'
+import type { FormStudentType } from '@/schemas'
 import { revalidateTag } from 'next/cache'
 import { cookies } from 'next/headers'
 
@@ -32,7 +32,7 @@ export async function listAllStudents() {
   }
 }
 
-export async function handleAddStudent(data: AddStudentType) {
+export async function handleAddStudent(data: FormStudentType) {
   const c = await cookies()
   try {
     const response = await fetch(
@@ -83,5 +83,36 @@ export async function getStudentDetails(studentId: string) {
   } catch (e) {
     console.error(e)
     return null
+  }
+}
+
+export async function handleUpdateStudent(
+  studentId: string,
+  data: FormStudentType
+) {
+  const c = await cookies()
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/student/edit/${studentId}`,
+      {
+        method: 'PUT',
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          Cookie: c.toString(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Houve um erro ao editar o aluno.')
+    }
+
+    revalidateTag('student-all')
+  } catch (e) {
+    console.error(e)
+    throw new Error('Houve um erro ao editar o aluno.')
   }
 }
