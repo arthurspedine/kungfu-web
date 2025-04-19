@@ -1,16 +1,8 @@
 'use client'
-
-import { Button } from '@/components/ui/button'
-import { DialogTrigger } from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import {} from '@/components/ui/dropdown-menu'
 import type { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical, Pen } from 'lucide-react'
+import {} from 'lucide-react'
+import { EditTrainingCenterDialog } from './edit-training-center'
 
 export type TrainingCenterData = {
   id: string
@@ -30,9 +22,7 @@ export type TrainingCenterData = {
   closingDate: string | null
 }
 
-export const columns = (
-  setSelectedTrainingCenterId: (id: string) => void
-): ColumnDef<TrainingCenterData>[] => [
+export const columns: ColumnDef<TrainingCenterData>[] = [
   {
     id: 'id',
     cell: ({ row }) => {
@@ -108,27 +98,9 @@ export const columns = (
       const trainingCenter = row.original
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className='text-right'>
-              <Button variant={'ghost'}>
-                <EllipsisVertical />
-              </Button>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className='w-6'>
-            <DialogTrigger className='w-full'>
-              <DropdownMenuItem
-                onClick={() => setSelectedTrainingCenterId(trainingCenter.id)}
-              >
-                Editar
-                <DropdownMenuShortcut>
-                  <Pen size={16} />
-                </DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DialogTrigger>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='text-right'>
+          <EditTrainingCenterDialog trainingCenterId={trainingCenter.id} />
+        </div>
       )
     },
   },
