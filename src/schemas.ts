@@ -96,7 +96,7 @@ export const editTrainingCenterSchema = addTrainingCenterSchema.extend({
 export type AddTrainingCenterType = z.infer<typeof addTrainingCenterSchema>
 export type EditTrainingCenterType = z.infer<typeof editTrainingCenterSchema>
 
-export const addStudentSchema = z.object({
+export const formStudentSchema = z.object({
   student: z.object({
     name: z.string().min(2, { message: 'Nome completo é obrigatório.' }),
     birthDate: z.string().refine(
@@ -141,4 +141,4 @@ export const addStudentSchema = z.object({
     .default(''),
 })
 
-export type AddStudentType = z.infer<typeof addStudentSchema>
+export type FormStudentType = z.infer<typeof formStudentSchema>

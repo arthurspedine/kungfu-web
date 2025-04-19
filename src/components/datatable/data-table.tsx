@@ -24,12 +24,21 @@ import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
 import type { ButtonConfigProps } from './interfaces'
 
+interface CustomColumnMeta {
+  hidden?: boolean
+}
+
+type CustomColumnDef<TData, TValue> = ColumnDef<TData, TValue> & {
+  meta?: CustomColumnMeta
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   filterColumns: {
     id: string
     label: string
+    mapFunction?: (value: string) => { label: string }
   }[]
 }
 
@@ -69,22 +78,30 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className='text-nowrap'
+                {headerGroup.headers
+                  .filter(header => {
+                    const column = header.column.columnDef as CustomColumnDef<
+                      TData,
+                      unknown
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+                    return !column.meta?.hidden
+                  })
+                  .map(header => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className='text-nowrap'
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
               </TableRow>
             ))}
           </TableHeader>
@@ -92,14 +109,23 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id} className='text-nowrap'>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row
+                    .getVisibleCells()
+                    .filter(cell => {
+                      const column = cell.column.columnDef as CustomColumnDef<
+                        TData,
+                        unknown
+                      >
+                      return !column.meta?.hidden
+                    })
+                    .map(cell => (
+                      <TableCell key={cell.id} className='text-nowrap'>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
                 </TableRow>
               ))
             ) : (

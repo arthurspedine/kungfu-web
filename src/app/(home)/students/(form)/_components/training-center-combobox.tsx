@@ -17,7 +17,7 @@ import {
 import { cn } from '@/lib/utils'
 import type { TrainingCenterSimpleInfo } from '@/types'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
 interface TrainingCenterComboboxProps {
@@ -46,15 +46,24 @@ interface TrainingCenterComboboxProps {
     trainingCenterId: string
   }>
   trainingCenterList: TrainingCenterSimpleInfo[]
+  initialValue?: string
 }
 
 export function TrainingCenterCombobox({
   setValue,
   clearErrors,
   trainingCenterList,
+  initialValue,
 }: TrainingCenterComboboxProps) {
   const [open, setOpen] = useState<boolean>(false)
   const [value, setComboboxValue] = useState<string>('')
+
+  useEffect(() => {
+    if (initialValue) {
+      setComboboxValue(initialValue)
+      setValue('trainingCenterId', initialValue)
+    }
+  }, [initialValue, setValue])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -62,7 +71,7 @@ export function TrainingCenterCombobox({
         <Button
           variant={'outline'}
           aria-expanded={open}
-          className='w-full justify-between text-muted-foreground font-normal'
+          className={`w-full justify-between font-normal ${value === '' && 'text-muted-foreground'}`}
         >
           {value
             ? trainingCenterList.find(

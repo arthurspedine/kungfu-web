@@ -24,7 +24,7 @@ export function LoginForm() {
       success: () => {
         setTimeout(() => {
           redirect('/')
-        }, 1000)
+        }, 500)
         return 'Logado com sucesso.'
       },
       error: 'Algo deu errado. Por favor, verifique suas credenciais.',

@@ -1,22 +1,24 @@
 'use client'
-
-import { Button } from '@/components/ui/button'
-import { beltMap } from '@/helper/belts'
+import { calculateBeltDuration, mapBeltKeyToValue } from '@/helper/belts'
+import { mapStudentSex } from '@/helper/studentSex'
 import type { StudentInfo } from '@/types'
 import type { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical } from 'lucide-react'
+import { EditStudentDialog } from './edit-student-dialog'
 
 export const columns: ColumnDef<StudentInfo>[] = [
   {
     id: 'id',
     cell: ({ row }) => {
-      return <div className='w-12'>{row.index + 1}</div>
+      return row.index + 1
     },
     header: 'ID',
   },
   {
     accessorKey: 'name',
     header: 'Nome',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'birthDate',
@@ -29,14 +31,17 @@ export const columns: ColumnDef<StudentInfo>[] = [
     accessorKey: 'age',
     header: 'Idade',
     cell: ({ row }) => {
-      return <div className='w-20'>{row.getValue('age')} anos</div>
+      return <div className='w-14'>{row.getValue('age')} anos</div>
     },
   },
   {
     accessorKey: 'sex',
     header: 'Sexo',
     cell: ({ row }) => {
-      return row.getValue('sex') === 'M' ? 'Masculino' : 'Feminino'
+      return mapStudentSex(row.getValue('sex')).label
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
     },
   },
   {
@@ -44,11 +49,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
     header: 'Faixa',
     cell: ({ row }) => {
       const value: string = row.getValue('currentBelt')
-      const mappedKey: keyof typeof beltMap = value
-        .toLowerCase()
-        .replace(/(\d)([A-Z])/g, '$1$2'.toLowerCase())
-        .replace(/_/g, '') as keyof typeof beltMap
-      const currentBelt = beltMap[mappedKey]
+      const currentBelt = mapBeltKeyToValue(value)
       return (
         <div
           style={{
@@ -62,30 +63,16 @@ export const columns: ColumnDef<StudentInfo>[] = [
         </div>
       )
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'beltAgeMonths',
     header: 'Tempo de Faixa',
     cell: ({ row }) => {
       const value: number = row.getValue('beltAgeMonths')
-      const years = Math.floor(value / 12)
-      const months = value % 12
-
-      const yearsPlural = years === 1 ? 'ano' : 'anos'
-      const monthsPlural = months === 1 ? 'mês' : 'meses'
-      let finalMessage = ''
-
-      if (years > 0) {
-        // "mês" se for 1, "meses" se for maior que 1
-
-        finalMessage =
-          months > 0
-            ? `${years} ${yearsPlural} e ${months} ${monthsPlural}`
-            : `${years} ${yearsPlural}`
-      } else {
-        finalMessage = `${months} ${monthsPlural}`
-      }
-      return <div>{finalMessage}</div>
+      return <div>{calculateBeltDuration(value)}</div>
     },
   },
   {
@@ -94,11 +81,17 @@ export const columns: ColumnDef<StudentInfo>[] = [
       const student = row.original
       return (
         <div className='text-right'>
-          <Button variant={'ghost'}>
-            <EllipsisVertical />
-          </Button>
+          <EditStudentDialog studentId={student.id} />
         </div>
       )
+    },
+  },
+  {
+    accessorKey: 'trainingCenter',
+    id: 'trainingCenter',
+    meta: { hidden: true },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
     },
   },
 ]
