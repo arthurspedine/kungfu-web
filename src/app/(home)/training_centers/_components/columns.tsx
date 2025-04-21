@@ -85,7 +85,7 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
       return value ? (
         value
       ) : (
-        <div className='bg-[#EAEAEA] border border-[#CACACA] text-xs rounded-xl text-center max-w-20 py-1'>
+        <div className='bg-muted border border-input text-xs rounded-xl text-center max-w-20 py-1'>
           Sem dados
         </div>
       )

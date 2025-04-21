@@ -57,6 +57,16 @@ export const beltMap = {
     color: '#000000',
     textColor: '#ffffff',
   },
+  black_8_grade: {
+    label: 'Preta 8° Grau',
+    color: '#000000',
+    textColor: '#ffffff',
+  },
+  black_9_grade: {
+    label: 'Preta 9° Grau',
+    color: '#000000',
+    textColor: '#ffffff',
+  },
 } as const
 
 export function mapBeltKeyToValue(key: string) {

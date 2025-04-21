@@ -26,7 +26,7 @@ export async function MenuSidebar() {
   ]
 
   return (
-    <div className='w-72 h-full bg-[#F5F7F9] space-y-8 px-6 shadow-xl'>
+    <div className='w-72 h-full bg-secondary space-y-8 px-6 shadow-xl'>
       <Image
         src={logo}
         alt='Kung Fu Taishan Logo'

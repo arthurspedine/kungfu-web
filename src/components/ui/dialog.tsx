@@ -39,7 +39,7 @@ export function DialogContent(props: DialogPrimitive.DialogContentProps) {
       <DialogPrimitive.DialogContent
         {...props}
         className={cn(
-          'fixed z-50 right-0 top-0 bottom-0 w-[500px] h-screen border-l border-[#CACACA] bg-[#F5F7F9] p-8',
+          'fixed z-50 right-0 top-0 bottom-0 w-[500px] h-screen border-l border-input bg-secondary p-8',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=open]:slide-in-from-right-full data-[state=closed]:slide-out-to-right-full',
           'duration-300 ease-in-out'
