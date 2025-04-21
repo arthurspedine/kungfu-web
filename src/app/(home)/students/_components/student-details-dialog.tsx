@@ -32,7 +32,7 @@ import { BookUser, EllipsisVertical, Pen, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
-export function EditStudentDialog({ studentId }: { studentId: string }) {
+export function StudentDetailsDialog({ studentId }: { studentId: string }) {
   const editStudentPath = `/students/edit/${studentId}`
   const [student, setStudent] = useState<ProcessedStudentDetails>(
     {} as ProcessedStudentDetails

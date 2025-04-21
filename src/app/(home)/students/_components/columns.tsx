@@ -3,7 +3,7 @@ import { calculateBeltDuration, mapBeltKeyToValue } from '@/helper/belts'
 import { mapStudentSex } from '@/helper/studentSex'
 import type { StudentInfo } from '@/types'
 import type { ColumnDef } from '@tanstack/react-table'
-import { EditStudentDialog } from './edit-student-dialog'
+import { StudentDetailsDialog } from './student-details-dialog'
 
 export const columns: ColumnDef<StudentInfo>[] = [
   {
@@ -81,7 +81,7 @@ export const columns: ColumnDef<StudentInfo>[] = [
       const student = row.original
       return (
         <div className='text-right'>
-          <EditStudentDialog studentId={student.id} />
+          <StudentDetailsDialog studentId={student.id} />
         </div>
       )
     },
