@@ -1,5 +1,5 @@
 'use server'
-import type { AddTrainingCenterType } from '@/schemas'
+import type { AddTrainingCenterType, EditTrainingCenterType } from '@/schemas'
 import type { ActionResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
 import { cookies } from 'next/headers'
@@ -134,5 +134,57 @@ export async function listAllTrainingCentersInfo() {
   } catch (e) {
     console.error(e)
     return null
+  }
+}
+
+export async function handleUpdateTrainingCenter(
+  trainingCenterId: string,
+  data: EditTrainingCenterType
+): Promise<ActionResponse> {
+  const c = await cookies()
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/training-center/edit/${trainingCenterId}`,
+      {
+        method: 'PUT',
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: {
+          Cookie: c.toString(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    )
+
+    if (!response.ok) {
+      const responseData = await response.json()
+      if (Array.isArray(responseData)) {
+        return {
+          success: false,
+          message: responseData.map(err => err.message).join('\n'),
+        }
+      }
+
+      if (responseData.error) {
+        return {
+          success: false,
+          message: responseData.error,
+        }
+      }
+
+      return {
+        success: false,
+        message: 'Houve um erro ao atualizado o núcleo.',
+      }
+    }
+    revalidateTag('training-center-all')
+    return { success: true }
+  } catch (e) {
+    console.error('Server action error:', e)
+    return {
+      success: false,
+      message: 'Houve um erro ao atualizado o núcleo.',
+    }
   }
 }

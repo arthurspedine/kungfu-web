@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
         buttonConfig={buttonConfig}
         filterColumns={filterColumns}
       />
-      <div className='border border-[#CACACA] rounded-xl w-full overflow-auto'>
+      <div className='border border-input rounded-xl w-full overflow-auto'>
         <Table className='bg-[#F5F5F5]'>
           <TableHeader>
             {headerGroups.map(headerGroup => (
@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className='bg-[#FEFEFE]'>
+          <TableBody className='bg-background'>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>

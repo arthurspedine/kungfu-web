@@ -17,12 +17,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function TeacherCombobox({
   setValue,
   clearErrors,
   teachersList,
+  initialValue,
 }: {
   setValue: UseFormSetValue<{
     teacherId: string
@@ -47,9 +48,17 @@ export function TeacherCombobox({
     number?: number | undefined
   }>
   teachersList: { id: string; name: string }[]
+  initialValue?: string
 }) {
   const [open, setOpen] = useState(false)
   const [value, setComboboxValue] = useState('')
+
+  useEffect(() => {
+    if (initialValue) {
+      setComboboxValue(initialValue)
+      setValue('teacherId', initialValue)
+    }
+  }, [initialValue, setValue])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,7 +66,7 @@ export function TeacherCombobox({
         <Button
           variant='outline'
           aria-expanded={open}
-          className='w-80 justify-between text-muted-foreground font-normal'
+          className={`w-80 justify-between font-normal ${value === '' && 'text-popover-foreground'}`}
         >
           {value
             ? teachersList.find(teacher => teacher.id === value)?.name

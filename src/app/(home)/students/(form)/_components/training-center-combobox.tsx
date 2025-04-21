@@ -71,7 +71,7 @@ export function TrainingCenterCombobox({
         <Button
           variant={'outline'}
           aria-expanded={open}
-          className={`w-full justify-between font-normal ${value === '' && 'text-muted-foreground'}`}
+          className={`w-full justify-between font-normal ${value === '' && 'text-popover-foreground'}`}
         >
           {value
             ? trainingCenterList.find(

@@ -6,7 +6,7 @@ import { LoginImageSide } from './_components/login-image-side'
 
 export default function LoginPage() {
   return (
-    <div className='flex h-full w-full bg-[#F5F7F9] py-6 overflow-y-auto'>
+    <div className='flex h-full w-full bg-secondary py-6 overflow-y-auto'>
       {/* LOGIN SIDE */}
       <div className='w-full flex flex-col px-12 justify-center lg:w-1/2'>
         <Image
