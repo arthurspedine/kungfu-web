@@ -1,11 +1,11 @@
 'use server'
 
+import { getToken } from '@/helper/getToken'
 import type { FormStudentType } from '@/schemas'
 import { revalidateTag } from 'next/cache'
-import { cookies } from 'next/headers'
 
 export async function listAllStudents() {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/student/list/all`,
@@ -17,7 +17,7 @@ export async function listAllStudents() {
           tags: ['students-all'],
         },
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     )
@@ -33,7 +33,7 @@ export async function listAllStudents() {
 }
 
 export async function handleAddStudent(data: FormStudentType) {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/student/register`,
@@ -42,7 +42,7 @@ export async function handleAddStudent(data: FormStudentType) {
         credentials: 'include',
         cache: 'no-cache',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -61,7 +61,7 @@ export async function handleAddStudent(data: FormStudentType) {
 }
 
 export async function getStudentDetails(studentId: string) {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/student/details/${studentId}`,
@@ -70,7 +70,7 @@ export async function getStudentDetails(studentId: string) {
         credentials: 'include',
         cache: 'no-cache',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     )
@@ -90,7 +90,7 @@ export async function handleUpdateStudent(
   studentId: string,
   data: FormStudentType
 ) {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/student/edit/${studentId}`,
@@ -99,7 +99,7 @@ export async function handleUpdateStudent(
         credentials: 'include',
         cache: 'no-cache',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),

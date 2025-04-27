@@ -1,11 +1,11 @@
 'use server'
+import { getToken } from '@/helper/getToken'
 import type { AddTrainingCenterType, EditTrainingCenterType } from '@/schemas'
 import type { ActionResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
-import { cookies } from 'next/headers'
 
 export async function getTrainingCentersList() {
-  const c = await cookies()
+  const accessToken = await getToken()
 
   try {
     const response = await fetch(
@@ -17,7 +17,7 @@ export async function getTrainingCentersList() {
         cache: 'no-cache',
         credentials: 'include',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     )
@@ -37,7 +37,7 @@ export async function getTrainingCentersList() {
 export async function handleAddTrainingCenter(
   data: AddTrainingCenterType
 ): Promise<ActionResponse> {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/training-center/register`,
@@ -46,7 +46,7 @@ export async function handleAddTrainingCenter(
         cache: 'no-cache',
         credentials: 'include',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -86,7 +86,7 @@ export async function handleAddTrainingCenter(
 }
 
 export async function getTrainingCenterInfo(trainingCenterId: string) {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/training-center/info/${trainingCenterId}`,
@@ -95,7 +95,7 @@ export async function getTrainingCenterInfo(trainingCenterId: string) {
         credentials: 'include',
         cache: 'no-cache',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     )
@@ -112,7 +112,7 @@ export async function getTrainingCenterInfo(trainingCenterId: string) {
 }
 
 export async function listAllTrainingCentersInfo() {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/training-center/all/info`,
@@ -121,7 +121,7 @@ export async function listAllTrainingCentersInfo() {
         credentials: 'include',
         cache: 'no-cache',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     )
@@ -141,7 +141,7 @@ export async function handleUpdateTrainingCenter(
   trainingCenterId: string,
   data: EditTrainingCenterType
 ): Promise<ActionResponse> {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/training-center/edit/${trainingCenterId}`,
@@ -150,7 +150,7 @@ export async function handleUpdateTrainingCenter(
         cache: 'no-cache',
         credentials: 'include',
         headers: {
-          Cookie: c.toString(),
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),

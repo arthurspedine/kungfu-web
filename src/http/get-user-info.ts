@@ -1,15 +1,15 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { getToken } from '@/helper/getToken'
 
 export async function getUserInfo() {
-  const c = await cookies()
+  const accessToken = await getToken()
   try {
     const response = await fetch(`${process.env.BACKEND_URL}/user/info`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        Cookie: c.toString(),
+        Authorization: `Bearer ${accessToken}`,
       },
     })
 
