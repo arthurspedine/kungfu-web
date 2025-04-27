@@ -108,7 +108,7 @@ export function calculateBeltDuration(value: number): string {
   return finalMessage
 }
 
-export function proccessStudentBelts(data: StudentDetails) {
+export function processStudentBelts(data: StudentDetails) {
   const { belts } = data
 
   const sortedBelts = [...belts].sort((a, b) => {

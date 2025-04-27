@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { proccessStudentBelts } from '@/helper/belts'
+import { processStudentBelts } from '@/helper/belts'
 import { formatDate } from '@/helper/formatDate'
 import { getStudentDetails } from '@/http/students'
 import type { ProcessedStudentDetails, StudentDetails } from '@/types'
@@ -43,7 +43,7 @@ export function StudentDetailsDialog({ studentId }: { studentId: string }) {
     setIsLoading(true)
     if (studentId) {
       const data: StudentDetails = await getStudentDetails(studentId)
-      setStudent(proccessStudentBelts(data))
+      setStudent(processStudentBelts(data))
       setIsLoading(false)
     }
   }

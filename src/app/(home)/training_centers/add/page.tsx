@@ -1,15 +1,15 @@
 import { Title } from '@/components/title'
-import { cookies } from 'next/headers'
 import { AddTrainingCenterForm } from './_components/add-training-center-form'
+import { getToken } from '@/helper/getToken'
 
 export default async function AddTrainingCentersPage() {
-  const c = await cookies()
+  const accessToken = await getToken()
   const listAllTeachers = await fetch(
     `${process.env.BACKEND_URL}/user/list/all`,
     {
       credentials: 'include',
       headers: {
-        Cookie: c.toString(),
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   )
