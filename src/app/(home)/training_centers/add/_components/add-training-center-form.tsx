@@ -298,7 +298,7 @@ export function AddTrainingCenterForm({
             )}
           </div>
         </div>
-        <div className='flex flex-col space-y-2 xl:self-end xl:space-y-0 xl:space-x-4 xl:flex-row'>
+        <div className='flex flex-col-reverse gap-2 sm:gap-4 xl:self-end sm:flex-row'>
           <Button
             variant={'outline'}
             className='w-full xl:w-48'
