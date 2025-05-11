@@ -175,19 +175,20 @@ export function AddTrainingCenterForm({
           )}
         </div>
         <div>
-          <div className='flex space-x-4'>
-            <div className='w-1/3'>
+          <div className='flex flex-col sm:flex-row gap-2 sm:gap-4'>
+            <div className='w-full sm:w-1/3'>
               <Label>Número</Label>
               {loading ? (
-                <Skeleton className='h-9 w-full' />
+                <Skeleton className='h-9 w-1/3' />
               ) : (
                 <Input
                   value={
                     getValues('number') === undefined ||
-                      getValues('number') === null
+                    getValues('number') === null
                       ? 0
                       : getValues('number')
                   }
+                  className='w-1/3'
                   placeholder='Digite o número do núcleo'
                   disabled={disabledInputs}
                   type='number'
@@ -202,6 +203,11 @@ export function AddTrainingCenterForm({
                     },
                   })}
                 />
+              )}
+              {errors.number && (
+                <p className='text-destructive text-sm pt-0.5 flex sm:hidden'>
+                  {errors.number.message}
+                </p>
               )}
             </div>
             <div className='w-2/3'>
@@ -224,13 +230,13 @@ export function AddTrainingCenterForm({
             </div>
           </div>
           {errors.number && (
-            <p className='text-destructive text-sm pt-0.5'>
+            <p className='text-destructive text-sm pt-0.5 hidden sm:flex'>
               {errors.number.message}
             </p>
           )}
         </div>
-        <div className='flex space-x-4 w-full'>
-          <div className='w-1/2'>
+        <div className='flex flex-col sm:flex-row gap-4 w-full'>
+          <div className='w-full sm:w-1/2'>
             <Label>Cidade</Label>
             {loading ? (
               <Skeleton className='h-9 w-full' />
@@ -247,7 +253,7 @@ export function AddTrainingCenterForm({
               </p>
             )}
           </div>
-          <div className='w-1/2'>
+          <div className='w-full sm:w-1/2'>
             <Label>Estado</Label>
             {loading ? (
               <Skeleton className='h-9 w-full' />
@@ -274,6 +280,7 @@ export function AddTrainingCenterForm({
               setValue={setValue}
               clearErrors={clearErrors}
               teachersList={teachers}
+              placeholderClassName='xxs:text-xs xxs:px-3 text-sm'
             />
             {errors.teacherId && (
               <p className='text-destructive text-sm pt-0.5'>
@@ -291,7 +298,7 @@ export function AddTrainingCenterForm({
             )}
           </div>
         </div>
-        <div className='flex flex-col space-y-2 xl:self-end xl:space-y-0 xl:space-x-4 xl:flex-row'>
+        <div className='flex flex-col-reverse gap-2 sm:gap-4 xl:self-end sm:flex-row'>
           <Button
             variant={'outline'}
             className='w-full xl:w-48'

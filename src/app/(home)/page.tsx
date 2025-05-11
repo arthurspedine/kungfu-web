@@ -1,9 +1,5 @@
-import { MenuSidebar } from './_components/sidebar'
+import { redirect } from 'next/navigation'
 
 export default function HomePage() {
-  return (
-    <div className='flex h-full'>
-      <MenuSidebar />
-    </div>
-  )
+  redirect('/training_centers')
 }

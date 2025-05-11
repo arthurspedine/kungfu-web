@@ -77,7 +77,7 @@ export function StudentDetailsDialog({ studentId }: { studentId: string }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent>
+      <DialogContent className='w-full sm:w-[500px]'>
         <div className='flex flex-col gap-6 h-full justify-end'>
           <div className='flex flex-col gap-3'>
             <div className='flex items-center justify-between'>

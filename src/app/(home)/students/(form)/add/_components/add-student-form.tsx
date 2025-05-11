@@ -180,7 +180,6 @@ export function AddStudentForm({
                     clearErrors(`belts.${index}.type`)
                   }}
                   value={watch(`belts.${index}.type`) || ''}
-                  defaultOpen={getValues('belts').length > 1}
                 >
                   <SelectTrigger className='w-full lg:w-60'>
                     <SelectValue placeholder='Selecione a faixa' />
@@ -226,7 +225,7 @@ export function AddStudentForm({
                   {...register(`belts.${index}.achievedDate`)}
                 />
                 {errors.belts?.[index]?.achievedDate && (
-                  <p className='text-destructive text-sm pt-0.5 text-nowrap'>
+                  <p className='text-destructive text-sm pt-0.5'>
                     {errors.belts?.[index].achievedDate?.message}
                   </p>
                 )}
@@ -239,7 +238,11 @@ export function AddStudentForm({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant='outline' className='self-end'>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        className='self-end'
+                      >
                         <CalendarFold />
                       </Button>
                     </TooltipTrigger>
@@ -279,7 +282,7 @@ export function AddStudentForm({
       >
         Novo cadastro de faixa
       </Button>
-      <div className='flex gap-4'>
+      <div className='flex flex-col-reverse gap-2 sm:gap-4 sm:flex-row'>
         <Button
           variant={'outline'}
           className='grow'

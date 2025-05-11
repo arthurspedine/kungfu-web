@@ -1,5 +1,6 @@
 'use client'
 
+import { SheetClose } from '@/components/ui/sheet'
 import type { NavigationProp } from '@/types'
 import Link from 'next/link'
 import { redirect, usePathname } from 'next/navigation'
@@ -16,13 +17,14 @@ export function NavigationMenu({ links }: { links: NavigationProp[] }) {
     <div className='space-y-1'>
       <p className='font-bold text-sm'>Navegação</p>
       {links.map(link => (
-        <Link
-          href={link.path}
-          key={link.id}
-          className={`py-2 px-4 rounded-xl flex gap-1 items-center ${pathname.startsWith(link.path) && 'border border-border bg-background text-primary-red shadow-md'}`}
-        >
-          {link.icon} {link.label}
-        </Link>
+        <SheetClose asChild key={link.id}>
+          <Link
+            href={link.path}
+            className={`py-2 px-4 rounded-xl flex gap-1 items-center ${pathname.startsWith(link.path) && 'border border-border bg-background text-primary-red shadow-md'}`}
+          >
+            {link.icon} {link.label}
+          </Link>
+        </SheetClose>
       ))}
     </div>
   )
