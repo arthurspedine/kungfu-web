@@ -24,6 +24,7 @@ export function TeacherCombobox({
   clearErrors,
   teachersList,
   initialValue,
+  placeholderClassName,
 }: {
   setValue: UseFormSetValue<{
     teacherId: string
@@ -49,6 +50,7 @@ export function TeacherCombobox({
   }>
   teachersList: { id: string; name: string }[]
   initialValue?: string
+  placeholderClassName?: string
 }) {
   const [open, setOpen] = useState(false)
   const [value, setComboboxValue] = useState('')
@@ -66,12 +68,15 @@ export function TeacherCombobox({
         <Button
           variant='outline'
           aria-expanded={open}
-          className={`w-80 justify-between font-normal ${value === '' && 'text-popover-foreground'}`}
+          className={cn(
+            `w-full sm:w-80 justify-between font-normal ${value === '' && 'text-popover-foreground'}`,
+            placeholderClassName
+          )}
         >
           {value
             ? teachersList.find(teacher => teacher.id === value)?.name
             : 'Selecione o professor docente'}
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          <ChevronsUpDown className='ml-2 size-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='p-0'>
