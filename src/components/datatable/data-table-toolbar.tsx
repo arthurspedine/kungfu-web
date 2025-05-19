@@ -1,4 +1,4 @@
-import { Plus, X } from 'lucide-react'
+import { PlusCircle, X } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Button } from '../ui/button'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
@@ -24,7 +24,7 @@ export function DataTableToolbar<TData>({
         onClick={() => redirect(buttonConfig.redirectTo ?? '')}
         className='xl:ml-auto'
       >
-        <Plus /> {buttonConfig.label}
+        <PlusCircle /> {buttonConfig.label}
       </Button>
       <div className='w-full gap-2 flex flex-col items-center xl:flex-row xl:pt-2'>
         {filterColumns.map(c => {
