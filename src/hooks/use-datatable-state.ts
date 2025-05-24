@@ -1,6 +1,6 @@
 'use client'
 
-import type { DataTableState } from '@/types/datatable'
+import type { DataTableState } from '@/components/datatable/interfaces'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
