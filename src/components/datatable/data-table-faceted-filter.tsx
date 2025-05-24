@@ -1,4 +1,3 @@
-import type { Column } from '@tanstack/react-table'
 import { Check } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
@@ -14,17 +13,13 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Separator } from '../ui/separator'
 import { FunnelIcon } from './funnel-icon'
-
-interface DataTableFacetedFilterProps<TData, TValue> {
-  column?: Column<TData, TValue>
-  title?: string
-  mapFunction?: (value: string) => { label: string }
-}
+import type { DataTableFacetedFilterProps } from './interfaces'
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
   mapFunction,
+  disabled = false,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues()
   const selectedValues = new Set(column?.getFilterValue() as string[])
@@ -40,7 +35,11 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant={'outline'} className='h-10 w-full xl:w-auto'>
+        <Button
+          variant={'outline'}
+          className='h-10 w-full xl:w-auto'
+          disabled={disabled}
+        >
           <FunnelIcon />
           {title}
           {selectedValues?.size > 0 && (

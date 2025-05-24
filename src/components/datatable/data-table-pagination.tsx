@@ -15,8 +15,16 @@ import {
 import type { DataTablePaginationProps } from './interfaces'
 
 export function DataTablePagination<TData>({
-  table,
-}: DataTablePaginationProps<TData>) {
+  currentPage,
+  pageSize,
+  totalPages,
+  onPageChange,
+  onPageSizeChange,
+  loading = false,
+}: DataTablePaginationProps) {
+  const canPreviousPage = currentPage > 0
+  const canNextPage = currentPage < totalPages - 1
+  const pageSizeOptions = [10, 20, 30, 40, 50, 100]
   return (
     <div className='flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:justify-between lg:justify-end py-2 md:space-x-4'>
       <div className='flex flex-col lg:space-x-4 lg:flex-row lg:items-center'>
@@ -24,18 +32,17 @@ export function DataTablePagination<TData>({
         <div className='flex items-center space-x-2'>
           <p className='text-sm font-medium'>Linhas por página</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={value => {
-              table.setPageSize(Number(value))
-            }}
+            value={String(pageSize)}
+            onValueChange={value => onPageSizeChange(Number(value))}
+            disabled={loading}
           >
-            <SelectTrigger className='h-8 w-[70px]' size='36'>
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            <SelectTrigger className='h-8 w-[70px]'>
+              <SelectValue placeholder={String(pageSize)} />
             </SelectTrigger>
             <SelectContent side='top'>
-              {[10, 20, 30, 40, 50].map(pageSize => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
+              {pageSizeOptions.map(size => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -43,41 +50,40 @@ export function DataTablePagination<TData>({
         </div>
         {/* PAGE COUNT */}
         <p className='min-w-24 lg:text-center text-sm font-medium'>
-          Página {table.getState().pagination.pageIndex + 1} de{' '}
-          {table.getPageCount()}
+          Página {currentPage + 1} de {totalPages}
         </p>
       </div>
       {/* BUTTONS */}
       <div className='flex space-x-2'>
         <Button
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => table.firstPage()}
-          disabled={!table.getCanPreviousPage()}
+          variant='outline'
+          size='sm'
+          onClick={() => onPageChange(0)}
+          disabled={!canPreviousPage || loading}
         >
           <ChevronsLeft />
         </Button>
         <Button
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          variant='outline'
+          size='sm'
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={!canPreviousPage || loading}
         >
           <ChevronLeft />
         </Button>
         <Button
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          variant='outline'
+          size='sm'
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!canNextPage || loading}
         >
           <ChevronRight />
         </Button>
         <Button
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => table.lastPage()}
-          disabled={!table.getCanNextPage()}
+          variant='outline'
+          size='sm'
+          onClick={() => onPageChange(totalPages - 1)}
+          disabled={!canNextPage || loading}
         >
           <ChevronsRight />
         </Button>

@@ -21,14 +21,7 @@ export function useDataTableState() {
       }
     })
 
-    const sortParam = searchParam.get('sort')
-    let sorting: DataTableState['sorting'] = {} as DataTableState['sorting']
-    if (sortParam) {
-      const [field, direction] = sortParam.split(':')
-      sorting = { field, direction: direction as 'asc' | 'desc' }
-    }
-
-    return { page, size, filters, sorting }
+    return { page, size, filters }
   }, [searchParam])
 
   const updateState = useCallback(
@@ -43,11 +36,6 @@ export function useDataTableState() {
         if (values && values.length > 0) {
           params.set(`filter_${key}`, values.join(','))
         }
-      }
-
-      const sorting = newState.sorting || state.sorting
-      if (sorting.field) {
-        params.set('sort', `${sorting.field}:${sorting.direction}`)
       }
 
       router.push(`?${params.toString()}`, { scroll: false })
