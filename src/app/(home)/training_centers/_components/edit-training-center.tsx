@@ -34,10 +34,13 @@ import {
 import { listAllTeachers } from '@/http/teacher'
 import { TeacherCombobox } from '../add/_components/teacher-combobox'
 import type { TrainingCenterData } from './columns'
+import { useRefreshTrainingCenters } from './training-centers-content'
 
 export function EditTrainingCenterDialog({
   trainingCenterId,
 }: { trainingCenterId: string }) {
+  const refreshContext = useRefreshTrainingCenters()
+
   const [trainingCenter, setTrainingCenter] = useState<TrainingCenterData>(
     {} as TrainingCenterData
   )
@@ -148,6 +151,7 @@ export function EditTrainingCenterDialog({
       })
 
       if (result.success) {
+        refreshContext()
         toast.dismiss(loadingToast)
         toast.success('Núcleo atualizado com sucesso!', {
           position: 'top-center',

@@ -3,14 +3,28 @@ import { type TrainingCenterData, columns } from './columns'
 import type { DataTableState, Page } from '@/components/datatable/interfaces'
 import { useDataTableState } from '@/hooks/use-datatable-state'
 import {
+  createContext,
   startTransition,
   useCallback,
+  useContext,
   useEffect,
   useState,
   useTransition,
 } from 'react'
 import { getTrainingCentersList } from '@/http/training-centers'
 import { DataTable } from '@/components/datatable/data-table'
+
+const RefreshContext = createContext<(() => void) | null>(null)
+
+export const useRefreshTrainingCenters = () => {
+  const refresh = useContext(RefreshContext)
+  if (!refresh) {
+    throw new Error(
+      'useRefreshTrainingCenters must be used within RefreshContext'
+    )
+  }
+  return refresh
+}
 
 export function TrainingCentersContent({
   initialData,
@@ -83,14 +97,22 @@ export function TrainingCentersContent({
     }
   }, [state, fetchData, initialData])
 
+  const refreshData = useCallback(() => {
+    startTransition(() => {
+      fetchData(state)
+    })
+  }, [fetchData, state])
+
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      buttonConfig={buttonConfig}
-      filterColumns={filterColumns}
-      onStateChange={handleStateChange}
-      loading={isPending}
-    />
+    <RefreshContext.Provider value={refreshData}>
+      <DataTable
+        columns={columns}
+        data={data}
+        buttonConfig={buttonConfig}
+        filterColumns={filterColumns}
+        onStateChange={handleStateChange}
+        loading={isPending}
+      />
+    </RefreshContext.Provider>
   )
 }
