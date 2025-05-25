@@ -8,14 +8,8 @@ export function DataTableToolbar<TData>({
   table,
   buttonConfig,
   filterColumns,
-}: DataTableToolbarProps<TData> &
-  ButtonConfigProps & {
-    filterColumns: {
-      id: string
-      label: string
-      mapFunction?: (value: string) => { label: string }
-    }[]
-  }) {
+  loading = false,
+}: DataTableToolbarProps<TData> & ButtonConfigProps) {
   const isFiltered = table.getState().columnFilters.length > 0
   return (
     <div className='w-full pb-4 flex flex-col justify-between gap-2 xl:flex-col xl:gap-0 xl:items-center'>
@@ -23,6 +17,7 @@ export function DataTableToolbar<TData>({
         variant={'green'}
         onClick={() => redirect(buttonConfig.redirectTo ?? '')}
         className='xl:ml-auto'
+        disabled={loading}
       >
         <PlusCircle /> {buttonConfig.label}
       </Button>
@@ -36,6 +31,7 @@ export function DataTableToolbar<TData>({
                 column={tableColumn}
                 title={c.label}
                 mapFunction={c.mapFunction}
+                disabled={loading}
               />
             )
         })}
@@ -43,7 +39,7 @@ export function DataTableToolbar<TData>({
           <Button
             variant='ghost'
             onClick={() => table.resetColumnFilters()}
-            className='h-10 px-2 lg:px-3'
+            className='h-10 w-full px-2 lg:w-fit lg:px-3'
           >
             Limpar filtros
             <X />

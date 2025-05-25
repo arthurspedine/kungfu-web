@@ -1,15 +1,19 @@
 'use server'
+import type { TrainingCenterData } from '@/app/(home)/training_centers/_components/columns'
+import type { Page } from '@/components/datatable/interfaces'
 import { getToken } from '@/helper/getToken'
 import type { AddTrainingCenterType, EditTrainingCenterType } from '@/schemas'
 import type { ActionResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
 
-export async function getTrainingCentersList() {
+export async function getTrainingCentersList(
+  queryString = ''
+): Promise<Page<TrainingCenterData>> {
   const accessToken = await getToken()
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/training-center/all`,
+      `${process.env.BACKEND_URL}/training-center/all?${queryString}`,
       {
         next: {
           tags: ['training-center-all'],

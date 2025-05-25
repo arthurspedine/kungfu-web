@@ -2,6 +2,7 @@ import type { BeltKey, BeltOutput, StudentDetails } from '@/types'
 import { formatDate } from './formatDate'
 
 export const beltMap = {
+  begginer: { label: 'Iniciante', color: '#ffffff', textColor: '#000000' },
   white: { label: 'Branca', color: '#ffffff', textColor: '#000000' },
   blue: { label: 'Azul', color: '#1e88e5', textColor: '#ffffff' },
   blue_grade: { label: 'Azul-Grau', color: '#0d47a1', textColor: '#ffffff' },

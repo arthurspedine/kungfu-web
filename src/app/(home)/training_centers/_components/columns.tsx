@@ -81,10 +81,13 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
   {
     accessorKey: 'closingDate',
     cell: ({ row }) => {
-      const value = row.getValue('closingDate')
-      return value ? (
-        value
-      ) : (
+      const value: string | null = row.getValue('closingDate')
+      if (value) {
+        const stripped = value.split('-')
+        if (stripped.length < 2) return value
+        return `${stripped[2]}/${stripped[1]}/${stripped[0]}`
+      }
+      return (
         <div className='bg-muted border border-input text-xs rounded-xl text-center max-w-20 py-1'>
           Sem dados
         </div>

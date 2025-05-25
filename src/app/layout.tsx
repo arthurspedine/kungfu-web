@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='pt-BR' suppressHydrationWarning>
+    <html lang='pt-BR'>
       <head>
         <link rel='icon' href={icon.src} sizes='any' />
       </head>

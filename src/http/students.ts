@@ -1,19 +1,22 @@
 'use server'
 
+import type { Page } from '@/components/datatable/interfaces'
 import { getToken } from '@/helper/getToken'
 import type { FormStudentType } from '@/schemas'
+import type { StudentInfo } from '@/types'
 import { revalidateTag } from 'next/cache'
 
-export async function listAllStudents() {
+export async function listAllStudents(
+  queryString = ''
+): Promise<Page<StudentInfo>> {
   const accessToken = await getToken()
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/student/list/all`,
+      `${process.env.BACKEND_URL}/student/list/all?${queryString}`,
       {
         cache: 'no-cache',
         credentials: 'include',
         next: {
-          revalidate: 5,
           tags: ['students-all'],
         },
         headers: {
