@@ -14,25 +14,12 @@ import {
 } from 'react'
 import { useDataTableState } from '@/hooks/use-datatable-state'
 import { listAllStudents } from '@/http/students'
+import Loading from '../../loading'
 
-export function StudentsContent({
-  initialData,
-}: { initialData: Page<StudentInfo> }) {
+export function StudentsContent() {
   const { state, updateState } = useDataTableState()
-  const [data, setData] = useState<Page<StudentInfo>>(initialData)
+  const [data, setData] = useState<Page<StudentInfo> | null>(null)
   const [isPending, setIsPending] = useTransition()
-
-  const buttonConfig = {
-    label: 'Adicionar Aluno',
-    redirectTo: '/students/add',
-  }
-
-  const filterColumns = [
-    { id: 'trainingCenter', label: 'Núcleo' },
-    { id: 'name', label: 'Aluno' },
-    { id: 'sex', label: 'Sexo', mapFunction: mapStudentSex },
-    { id: 'currentBelt', label: 'Faixa', mapFunction: mapBeltKeyToValue },
-  ]
 
   const fetchData = useCallback(async (tableState: DataTableState) => {
     try {
@@ -73,25 +60,25 @@ export function StudentsContent({
   )
 
   useEffect(() => {
-    const initialState = {
-      page: initialData.page,
-      size: initialData.size,
-      filters: {},
-    }
+    fetchData(state)
+  }, [fetchData, state])
 
-    if (JSON.stringify(state) !== JSON.stringify(initialState)) {
-      startTransition(() => {
-        fetchData(state)
-      })
-    }
-  }, [state, fetchData, initialData])
-
-  return (
+  return !data ? (
+    <Loading />
+  ) : (
     <DataTable
       columns={columns}
       data={data}
-      buttonConfig={buttonConfig}
-      filterColumns={filterColumns}
+      buttonConfig={{
+        label: 'Adicionar Aluno',
+        redirectTo: '/students/add',
+      }}
+      filterColumns={[
+        { id: 'trainingCenter', label: 'Núcleo' },
+        { id: 'name', label: 'Aluno' },
+        { id: 'sex', label: 'Sexo', mapFunction: mapStudentSex },
+        { id: 'currentBelt', label: 'Faixa', mapFunction: mapBeltKeyToValue },
+      ]}
       onStateChange={handleStateChange}
       loading={isPending}
     />

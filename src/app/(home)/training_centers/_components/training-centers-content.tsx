@@ -4,7 +4,6 @@ import type { DataTableState, Page } from '@/components/datatable/interfaces'
 import { useDataTableState } from '@/hooks/use-datatable-state'
 import {
   createContext,
-  startTransition,
   useCallback,
   useContext,
   useEffect,
@@ -13,6 +12,7 @@ import {
 } from 'react'
 import { getTrainingCentersList } from '@/http/training-centers'
 import { DataTable } from '@/components/datatable/data-table'
+import Loading from '../../loading'
 
 const RefreshContext = createContext<(() => void) | null>(null)
 
@@ -26,24 +26,10 @@ export const useRefreshTrainingCenters = () => {
   return refresh
 }
 
-export function TrainingCentersContent({
-  initialData,
-}: { initialData: Page<TrainingCenterData> }) {
+export function TrainingCentersContent() {
   const { state, updateState } = useDataTableState()
-  const [data, setData] = useState<Page<TrainingCenterData>>(initialData)
-  const [isPending, setIsPending] = useTransition()
-
-  const buttonConfig = {
-    label: 'Cadastrar Núcleo',
-    redirectTo: '/training_centers/add',
-  }
-
-  const filterColumns = [
-    { id: 'name', label: 'Núcleo' },
-    { id: 'teacher_name', label: 'Professor Docente' },
-    { id: 'city', label: 'Cidade' },
-    { id: 'state', label: 'Estado' },
-  ]
+  const [data, setData] = useState<Page<TrainingCenterData> | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const fetchData = useCallback(async (tableState: DataTableState) => {
     try {
@@ -51,7 +37,6 @@ export function TrainingCentersContent({
       params.set('page', String(tableState.page))
       params.set('size', String(tableState.size))
 
-      // Add filters
       for (const [key, values] of Object.entries(tableState.filters)) {
         if (values && values.length > 0) {
           for (const value of values) {
@@ -83,36 +68,38 @@ export function TrainingCentersContent({
     [state, updateState, fetchData]
   )
 
-  useEffect(() => {
-    const initialState = {
-      page: initialData.page,
-      size: initialData.size,
-      filters: {},
-    }
-
-    if (JSON.stringify(state) !== JSON.stringify(initialState)) {
-      startTransition(() => {
-        fetchData(state)
-      })
-    }
-  }, [state, fetchData, initialData])
-
   const refreshData = useCallback(() => {
     startTransition(() => {
       fetchData(state)
     })
   }, [fetchData, state])
 
+  useEffect(() => {
+    fetchData(state)
+  }, [fetchData, state])
+
   return (
     <RefreshContext.Provider value={refreshData}>
-      <DataTable
-        columns={columns}
-        data={data}
-        buttonConfig={buttonConfig}
-        filterColumns={filterColumns}
-        onStateChange={handleStateChange}
-        loading={isPending}
-      />
+      {!data ? (
+        <Loading />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={data}
+          buttonConfig={{
+            label: 'Cadastrar Núcleo',
+            redirectTo: '/training_centers/add',
+          }}
+          filterColumns={[
+            { id: 'name', label: 'Núcleo' },
+            { id: 'teacher_name', label: 'Professor Docente' },
+            { id: 'city', label: 'Cidade' },
+            { id: 'state', label: 'Estado' },
+          ]}
+          onStateChange={handleStateChange}
+          loading={isPending}
+        />
+      )}
     </RefreshContext.Provider>
   )
 }
