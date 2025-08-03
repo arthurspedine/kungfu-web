@@ -2,7 +2,7 @@
 import type { LoginDataInput } from '@/schemas'
 import { cookies } from 'next/headers'
 
-export default async function loginUser(data: LoginDataInput) {
+export async function loginUser(data: LoginDataInput) {
   try {
     const response = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
       method: 'POST',

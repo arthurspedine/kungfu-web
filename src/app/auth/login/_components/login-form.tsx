@@ -1,10 +1,11 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import loginUser from '@/http/auth'
+import { loginUser } from '@/http/auth'
 import { type LoginDataInput, loginDataSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { redirect } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -17,20 +18,25 @@ export function LoginForm() {
     resolver: zodResolver(loginDataSchema),
   })
 
-  function handleLoginSubmit(data: LoginDataInput) {
-    const handleRequest = loginUser(data)
-    toast.promise(handleRequest, {
-      loading: 'Verificando credenciais...',
-      success: () => {
-        setTimeout(() => {
-          redirect('/')
-        }, 500)
-        return 'Logado com sucesso.'
-      },
-      error: 'Algo deu errado. Por favor, verifique suas credenciais.',
-      position: 'top-center',
-      style: { filter: 'none', zIndex: 10 },
-    })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleLoginSubmit(data: LoginDataInput) {
+    setIsSubmitting(true)
+    try {
+      await loginUser(data)
+      toast.success('Logado com sucesso.', {
+        position: 'top-center',
+        style: { filter: 'none', zIndex: 10 },
+      })
+      redirect('/')
+    } catch (e) {
+      toast.error('Algo deu errado. Por favor, verifique suas credenciais.', {
+        position: 'top-center',
+        style: { filter: 'none', zIndex: 10 },
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -72,7 +78,9 @@ export function LoginForm() {
           )}
         </div>
       </div>
-      <Button>Entrar</Button>
+      <Button type='submit' disabled={isSubmitting}>
+        {isSubmitting ? 'Verificando credenciais...' : 'Entrar'}
+      </Button>
     </form>
   )
 }

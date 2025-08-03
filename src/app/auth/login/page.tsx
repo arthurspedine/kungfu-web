@@ -1,19 +1,14 @@
-import logo from '&/public/logo.svg'
 import { Title } from '@/components/title'
-import Image from 'next/image'
 import { LoginForm } from './_components/login-form'
 import { LoginImageSide } from './_components/login-image-side'
+import { Logo } from '@/components/logo'
 
 export default function LoginPage() {
   return (
     <div className='flex h-full w-full bg-secondary py-6 overflow-y-auto'>
       {/* LOGIN SIDE */}
       <div className='w-full flex flex-col px-12 justify-center lg:w-1/2'>
-        <Image
-          src={logo}
-          alt='Kung Fu Taishan Logo'
-          className='pb-4 mx-auto w-auto h-64'
-        />
+        <Logo />
         <Title className='text-primary'>Seja bem vindo,</Title>
         <span className='text-primary'>
           Insira seu email e senha para acesso.
