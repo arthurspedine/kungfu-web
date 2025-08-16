@@ -85,3 +85,43 @@ export type ProcessedStudentDetails = {
   belts: BeltOutput[]
   trainingCenter: TrainingCenterSimpleInfo
 }
+
+export type TrainingCenterDetailsResponse = {
+  trainingCenter: {
+    id: string
+    teacher: {
+      id: string
+      name: string
+      currentBelt: string
+      sex: string
+    }
+    studentsNumber: number
+    name: string
+    street: string
+    number: number
+    additionalAddress: string | null
+    city: string
+    state: string
+    zipCode: string
+    openingDate: string
+    closingDate: string | null
+  }
+  students: {
+    studentId: string
+    student: {
+      name: string
+      birthDate: string
+      sex: string
+    }
+    currentBelt: string
+  }[]
+}
+
+export type UserRole = 'TEACHER' | 'MASTER' | 'ADMIN'
+
+export type UserInfo = {
+  id: string
+  name: string
+  email: string
+  role: UserRole
+}

@@ -52,11 +52,13 @@ export function TrainingCenterCombobox({
           aria-expanded={open}
           className={`w-full justify-between font-normal ${value === '' && 'text-popover-foreground'}`}
         >
-          {value
-            ? trainingCenterList.find(
-                trainingCenter => trainingCenter.id === value
-              )?.name
-            : 'Selecione o núcleo'}
+          {value === ''
+            ? 'Selecione o núcleo'
+            : value === 'none'
+              ? 'Nenhum núcleo'
+              : trainingCenterList.find(
+                  trainingCenter => trainingCenter.id === value
+                )?.name}
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
@@ -66,6 +68,24 @@ export function TrainingCenterCombobox({
           <CommandList>
             <CommandEmpty>Nenhum núcleo encontrado.</CommandEmpty>
             <CommandGroup>
+              <CommandItem
+                value='none'
+                onSelect={() => {
+                  setComboboxValue('none')
+                  setValue('trainingCenterId', null)
+                  clearErrors('trainingCenterId')
+                  setOpen(false)
+                }}
+              >
+                <Check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    value === 'none' ? 'opacity-100' : 'opacity-0'
+                  )}
+                />
+                Nenhum núcleo
+              </CommandItem>
+
               {trainingCenterList.map(trainingCenter => (
                 <CommandItem
                   key={trainingCenter.id}

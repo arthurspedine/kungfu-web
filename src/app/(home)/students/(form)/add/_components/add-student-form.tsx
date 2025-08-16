@@ -41,6 +41,7 @@ import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { TrainingCenterCombobox } from '../../_components/training-center-combobox'
 import { validateBeltSequence } from '../../validate-belt-sequence'
 
 export function AddStudentForm({
@@ -133,7 +134,15 @@ export function AddStudentForm({
         }, 500)
         return 'Aluno cadastrado com sucesso!'
       },
-      error: 'Algo deu errado. Por favor, tente novamente.',
+      error: error => {
+        if (error && typeof error === 'object' && error.message) {
+          return error.message
+        }
+        if (typeof error === 'string') {
+          return error
+        }
+        return 'Algo deu errado. Por favor, tente novamente.'
+      },
       position: 'top-center',
       style: { filter: 'none', zIndex: 10 },
     })
@@ -203,7 +212,7 @@ export function AddStudentForm({
           </CardContent>
         </Card>
 
-        {/* Card de Informações do Usuário - Condicional */}
+        {/* Student card info*/}
         {createUser && (
           <Card>
             <CardHeader>
@@ -294,7 +303,7 @@ export function AddStudentForm({
           </Card>
         )}
 
-        {/* Card de Informações Pessoais */}
+        {/* Personal info */}
         <Card>
           <CardHeader>
             <CardTitle>Informações Pessoais</CardTitle>
@@ -361,31 +370,11 @@ export function AddStudentForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Núcleo (Opcional)</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value || ''}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Selecione um núcleo (opcional)' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem
-                          value='none'
-                          onSelect={() =>
-                            form.setValue('trainingCenterId', null)
-                          }
-                        >
-                          Nenhum núcleo
-                        </SelectItem>
-                        {trainingCenters.map(center => (
-                          <SelectItem key={center.id} value={center.id}>
-                            {center.name} - {center.teacherName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <TrainingCenterCombobox
+                      setValue={form.setValue}
+                      clearErrors={form.clearErrors}
+                      trainingCenterList={trainingCenters}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -394,8 +383,7 @@ export function AddStudentForm({
           </CardContent>
         </Card>
 
-        {/* Card de Faixas */}
-
+        {/* Belts */}
         <Card>
           <CardHeader>
             <CardTitle>Faixas</CardTitle>

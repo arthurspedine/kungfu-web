@@ -1,7 +1,8 @@
 'use client'
-import {} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 import type { ColumnDef } from '@tanstack/react-table'
-import {} from 'lucide-react'
+import { Eye } from 'lucide-react'
+import Link from 'next/link'
 import { EditTrainingCenterDialog } from './edit-training-center'
 
 export type TrainingCenterData = {
@@ -33,6 +34,17 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
   {
     accessorKey: 'name',
     header: 'Nome',
+    cell: ({ row }) => {
+      const trainingCenter = row.original
+      return (
+        <Link
+          href={`/training_centers/${trainingCenter.id}`}
+          className='font-medium text-blue-600 hover:text-blue-800 hover:underline'
+        >
+          {trainingCenter.name}
+        </Link>
+      )
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
@@ -50,7 +62,7 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
     cell: ({ row }) => {
       const { street, number, additionalAddress } = row.original
       const additionalAddressStr =
-        additionalAddress != null ? `, ${additionalAddress}` : ''
+        additionalAddress !== '' ? `, ${additionalAddress}` : ''
       return `${street} ${number}${additionalAddressStr}`
     },
   },
@@ -101,7 +113,13 @@ export const columns: ColumnDef<TrainingCenterData>[] = [
       const trainingCenter = row.original
 
       return (
-        <div className='text-right'>
+        <div className='flex items-center gap-2 justify-end'>
+          <Link href={`/training_centers/${trainingCenter.id}`}>
+            <Button variant='ghost' size='sm'>
+              <Eye className='h-4 w-4' />
+              Visualizar
+            </Button>
+          </Link>
           <EditTrainingCenterDialog trainingCenterId={trainingCenter.id} />
         </div>
       )

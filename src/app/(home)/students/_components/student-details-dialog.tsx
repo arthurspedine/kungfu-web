@@ -131,14 +131,15 @@ export function StudentDetailsDialog({ studentId }: { studentId: string }) {
                   </span>
                 </div>
                 {student.trainingCenter && (
-                  <div className='space-y-2'>
+                  <div className='flex flex-col'>
                     <p className='text-muted-foreground'>Núcleo</p>
-                    <div className='font-medium'>
-                      <p>{student.trainingCenter.name}</p>
-                      <p className='text-xs text-muted-foreground'>
-                        Professor: {student.trainingCenter.teacherName}
-                      </p>
-                    </div>
+
+                    <span className='font-medium'>
+                      {student.trainingCenter.name}
+                    </span>
+                    <span className='text-xs text-muted-foreground'>
+                      Professor: {student.trainingCenter.teacherName}
+                    </span>
                   </div>
                 )}
               </>

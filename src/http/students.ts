@@ -62,12 +62,26 @@ export async function handleAddStudent(data: FormStudentType) {
     )
 
     if (!response.ok) {
+      const responseData = await response.json()
+
+      if (responseData.message) {
+        throw new Error(responseData.message)
+      }
+
+      if (responseData.error) {
+        throw new Error(responseData.error)
+      }
+
       throw new Error('Houve um erro ao cadastrar o aluno.')
     }
 
     revalidateTag('student-all')
   } catch (e) {
     console.error(e)
+    // Re-throw the original error message if it exists
+    if (e instanceof Error) {
+      throw e
+    }
     throw new Error('Houve um erro ao cadastrar o aluno.')
   }
 }
@@ -119,12 +133,22 @@ export async function handleUpdateStudent(
     )
 
     if (!response.ok) {
+      const responseData = await response.json()
+
+      if (responseData.error) {
+        throw new Error(responseData.error)
+      }
+
       throw new Error('Houve um erro ao editar o aluno.')
     }
 
     revalidateTag('student-all')
   } catch (e) {
     console.error(e)
+    // Re-throw the original error message if it exists
+    if (e instanceof Error) {
+      throw e
+    }
     throw new Error('Houve um erro ao editar o aluno.')
   }
 }

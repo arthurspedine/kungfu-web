@@ -3,7 +3,7 @@ import type { TrainingCenterData } from '@/app/(home)/training_centers/_componen
 import type { Page } from '@/components/datatable/interfaces'
 import { getToken } from '@/helper/getToken'
 import type { AddTrainingCenterType, EditTrainingCenterType } from '@/schemas'
-import type { ActionResponse } from '@/types'
+import type { ActionResponse, TrainingCenterDetailsResponse } from '@/types'
 import { revalidateTag } from 'next/cache'
 
 export async function getTrainingCentersList(
@@ -190,5 +190,34 @@ export async function handleUpdateTrainingCenter(
       success: false,
       message: 'Houve um erro ao atualizado o núcleo.',
     }
+  }
+}
+
+export async function getTrainingCenterDetails(
+  id: string
+): Promise<TrainingCenterDetailsResponse> {
+  const accessToken = await getToken()
+
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/training-center/details/${id}`,
+      {
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Houve um erro ao requisitar os dados.')
+    }
+
+    const data = await response.json()
+    return data
+  } catch (e) {
+    console.error(e)
+    throw new Error('Houve um erro ao buscar os detalhes do núcleo.')
   }
 }

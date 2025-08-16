@@ -9,15 +9,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Skeleton } from '@/components/ui/skeleton'
 import { getUserInfo } from '@/http/get-user-info'
-import type { NavigationProp } from '@/types'
+import type { NavigationProp, UserInfo, UserRole } from '@/types'
 import { LayoutGrid, Menu, Users } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { LogOutButton } from './logout-button'
 import { NavigationMenu } from './navigation-menu'
-
-type UserRole = 'TEACHER' | 'MASTER' | 'ADMIN'
 
 const roleLabels: Record<UserRole, string> = {
   TEACHER: 'Professor',
@@ -46,12 +45,6 @@ const navigation_links: NavigationProp[] = [
   },
 ]
 
-type UserInfo = {
-  name: string
-  email: string
-  role: UserRole
-}
-
 export function MenuSidebar() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -74,8 +67,7 @@ export function MenuSidebar() {
   if (isLoading || !userInfo) {
     return (
       <div className='w-72 h-full bg-secondary space-y-8 px-6 shadow-xl'>
-        {/* Loading skeleton */}
-        <div className='h-20 animate-pulse bg-gray-200 rounded mt-8' />
+        <SidebarSkeleton />
       </div>
     )
   }
@@ -153,6 +145,36 @@ function SidebarContent({
 
       {/* NAVIGATION */}
       <NavigationMenu links={navigation_links} />
+    </div>
+  )
+}
+
+function SidebarSkeleton() {
+  return (
+    <div className='h-full pt-8'>
+      {/* Logo skeleton */}
+      <Skeleton className='h-44 w-44 mx-auto mb-8' />
+
+      {/* User card skeleton */}
+      <div className='bg-white w-60 border border-border rounded-xl p-4 mb-6'>
+        <div className='flex items-center justify-between'>
+          <div className='space-y-2 flex-1'>
+            <Skeleton className='h-4 w-32' />
+            <Skeleton className='h-3 w-40' />
+            <Skeleton className='h-5 w-16 mt-2' />
+          </div>
+          <Skeleton className='h-8 w-8 rounded' />
+        </div>
+      </div>
+
+      {/* Navigation menu skeleton */}
+      <div className='space-y-1'>
+        <p className='font-bold text-sm'>Navegação</p>
+        <div className='space-y-2'>
+          <Skeleton className='h-10 w-full rounded-lg' />
+          <Skeleton className='h-10 w-full rounded-lg' />
+        </div>
+      </div>
     </div>
   )
 }
