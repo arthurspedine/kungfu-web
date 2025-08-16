@@ -1,19 +1,5 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import {
   Card,
   CardContent,
@@ -29,18 +15,32 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { listAllBelts } from '@/http/belts'
-import { handleAddStudent } from '@/http/students'
 import { getUserInfo } from '@/http/get-user-info'
+import { handleAddStudent } from '@/http/students'
 import { type FormStudentType, formStudentSchema } from '@/schemas'
 import type { RequestBeltType, TrainingCenterSimpleInfo } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarFold, Trash, Eye, EyeOff, UserPlus } from 'lucide-react'
+import { CalendarFold, Eye, EyeOff, Trash, UserPlus } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { Separator } from '@/components/ui/separator'
 import { validateBeltSequence } from '../../validate-belt-sequence'
 
 export function AddStudentForm({

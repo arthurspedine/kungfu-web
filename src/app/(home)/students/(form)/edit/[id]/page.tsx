@@ -1,5 +1,5 @@
-import { listAllTrainingCentersInfo } from '@/http/training-centers'
 import { getStudentDetails } from '@/http/students'
+import { listAllTrainingCentersInfo } from '@/http/training-centers'
 import { redirect } from 'next/navigation'
 import { EditStudentForm } from './_components/edit-student-form'
 

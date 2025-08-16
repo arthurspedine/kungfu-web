@@ -1,7 +1,8 @@
 'use client'
-import { type TrainingCenterData, columns } from './columns'
+import { DataTable } from '@/components/datatable/data-table'
 import type { DataTableState, Page } from '@/components/datatable/interfaces'
 import { useDataTableState } from '@/hooks/use-datatable-state'
+import { getTrainingCentersList } from '@/http/training-centers'
 import {
   createContext,
   useCallback,
@@ -10,9 +11,8 @@ import {
   useState,
   useTransition,
 } from 'react'
-import { getTrainingCentersList } from '@/http/training-centers'
-import { DataTable } from '@/components/datatable/data-table'
 import Loading from '../../loading'
+import { type TrainingCenterData, columns } from './columns'
 
 const RefreshContext = createContext<(() => void) | null>(null)
 

@@ -1,7 +1,7 @@
+import { Logo } from '@/components/logo'
 import { Title } from '@/components/title'
 import { LoginForm } from './_components/login-form'
 import { LoginImageSide } from './_components/login-image-side'
-import { Logo } from '@/components/logo'
 
 export default function LoginPage() {
   return (

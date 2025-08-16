@@ -9,18 +9,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { mapBeltValueToKey } from '@/helper/belts'
 import { listAllBelts } from '@/http/belts'
+import { handleUpdateStudent } from '@/http/students'
 import { type FormStudentType, formStudentSchema } from '@/schemas'
 import type {
   RequestBeltType,
-  TrainingCenterSimpleInfo,
   StudentDetails,
+  TrainingCenterSimpleInfo,
 } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarFold, Trash } from 'lucide-react'
@@ -28,11 +31,8 @@ import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { Separator } from '@/components/ui/separator'
-import { validateBeltSequence } from '../../../validate-belt-sequence'
 import { TrainingCenterCombobox } from '../../../_components/training-center-combobox'
-import { mapBeltValueToKey } from '@/helper/belts'
-import { handleUpdateStudent } from '@/http/students'
+import { validateBeltSequence } from '../../../validate-belt-sequence'
 
 export function EditStudentForm({
   studentData,

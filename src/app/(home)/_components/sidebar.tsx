@@ -1,10 +1,6 @@
 'use client'
 import logo from '&/public/logo.svg'
-import type { NavigationProp } from '@/types'
-import { LayoutGrid, Menu, Users } from 'lucide-react'
-import Image from 'next/image'
-import { LogOutButton } from './logout-button'
-import { NavigationMenu } from './navigation-menu'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -13,9 +9,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
 import { getUserInfo } from '@/http/get-user-info'
+import type { NavigationProp } from '@/types'
+import { LayoutGrid, Menu, Users } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { LogOutButton } from './logout-button'
+import { NavigationMenu } from './navigation-menu'
 
 type UserRole = 'TEACHER' | 'MASTER' | 'ADMIN'
 

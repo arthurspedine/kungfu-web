@@ -1,7 +1,6 @@
 'use client'
 import { Check, ChevronsUpDown } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -16,8 +15,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
+import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
+import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
 export function TeacherCombobox({
   setValue,

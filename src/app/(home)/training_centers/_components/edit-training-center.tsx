@@ -9,8 +9,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { listAllTeachers } from '@/http/teacher'
 import {
   getTrainingCenterInfo,
   handleUpdateTrainingCenter,
@@ -24,14 +32,6 @@ import { EllipsisVertical, Pen, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { listAllTeachers } from '@/http/teacher'
 import { TeacherCombobox } from '../add/_components/teacher-combobox'
 import type { TrainingCenterData } from './columns'
 import { useRefreshTrainingCenters } from './training-centers-content'

@@ -1,10 +1,11 @@
 'use client'
 import { DataTable } from '@/components/datatable/data-table'
-import type { StudentInfo } from '@/types'
-import { columns } from './columns'
+import type { DataTableState, Page } from '@/components/datatable/interfaces'
 import { mapBeltKeyToValue } from '@/helper/belts'
 import { mapStudentSex } from '@/helper/studentSex'
-import type { DataTableState, Page } from '@/components/datatable/interfaces'
+import { useDataTableState } from '@/hooks/use-datatable-state'
+import { listAllStudents } from '@/http/students'
+import type { StudentInfo } from '@/types'
 import {
   startTransition,
   useCallback,
@@ -12,9 +13,8 @@ import {
   useState,
   useTransition,
 } from 'react'
-import { useDataTableState } from '@/hooks/use-datatable-state'
-import { listAllStudents } from '@/http/students'
 import Loading from '../../loading'
+import { columns } from './columns'
 
 export function StudentsContent() {
   const { state, updateState } = useDataTableState()

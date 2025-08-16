@@ -19,11 +19,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
 import type { ButtonConfigProps, DataTableState, Page } from './interfaces'
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react'
 
 interface CustomColumnMeta {
   hidden?: boolean
