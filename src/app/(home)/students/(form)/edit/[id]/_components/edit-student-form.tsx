@@ -179,7 +179,7 @@ export function EditStudentForm({
             setValue={setValue}
             clearErrors={clearErrors}
             trainingCenterList={trainingCenters}
-            initialValue={studentData.trainingCenterId}
+            initialValue={studentData.trainingCenter.id}
           />
           {errors.trainingCenterId && (
             <p className='text-destructive text-sm pt-0.5 text-nowrap'>

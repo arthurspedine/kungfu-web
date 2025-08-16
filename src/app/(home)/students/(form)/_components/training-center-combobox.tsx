@@ -15,36 +15,15 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import type { FormStudentType } from '@/schemas'
 import type { TrainingCenterSimpleInfo } from '@/types'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { UseFormClearErrors, UseFormSetValue } from 'react-hook-form'
 
 interface TrainingCenterComboboxProps {
-  setValue: UseFormSetValue<{
-    student: {
-      name: string
-      birthDate: string
-      sex: 'M' | 'F'
-    }
-    belts: {
-      type: string
-      achievedDate: string
-    }[]
-    trainingCenterId: string
-  }>
-  clearErrors: UseFormClearErrors<{
-    student: {
-      name: string
-      birthDate: string
-      sex: 'M' | 'F'
-    }
-    belts: {
-      type: string
-      achievedDate: string
-    }[]
-    trainingCenterId: string
-  }>
+  setValue: UseFormSetValue<FormStudentType>
+  clearErrors: UseFormClearErrors<FormStudentType>
   trainingCenterList: TrainingCenterSimpleInfo[]
   initialValue?: string
 }
