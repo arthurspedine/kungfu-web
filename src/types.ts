@@ -72,7 +72,7 @@ export type StudentDetails = {
     sex: string
   }
   belts: BeltInput[]
-  trainingCenterId: string
+  trainingCenter: TrainingCenterSimpleInfo
 }
 
 export type ProcessedStudentDetails = {
@@ -83,4 +83,5 @@ export type ProcessedStudentDetails = {
     sex: string
   }
   belts: BeltOutput[]
+  trainingCenter: TrainingCenterSimpleInfo
 }

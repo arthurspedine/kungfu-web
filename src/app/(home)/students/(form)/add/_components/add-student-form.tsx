@@ -1,5 +1,4 @@
 'use client'
-import { Label } from '@/components/label'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -15,70 +14,111 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { listAllBelts } from '@/http/belts'
 import { handleAddStudent } from '@/http/students'
+import { getUserInfo } from '@/http/get-user-info'
 import { type FormStudentType, formStudentSchema } from '@/schemas'
 import type { RequestBeltType, TrainingCenterSimpleInfo } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarFold, Trash } from 'lucide-react'
+import { CalendarFold, Trash, Eye, EyeOff, UserPlus } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Separator } from '@/components/ui/separator'
 import { validateBeltSequence } from '../../validate-belt-sequence'
-import { TrainingCenterCombobox } from '../../_components/training-center-combobox'
 
 export function AddStudentForm({
   trainingCenters,
 }: { trainingCenters: TrainingCenterSimpleInfo[] }) {
   const [beltTypes, setBeltTypes] = useState<RequestBeltType[]>([])
+  const [currentUserRole, setCurrentUserRole] = useState<
+    'TEACHER' | 'MASTER' | 'ADMIN' | null
+  >(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [createUser, setCreateUser] = useState(false)
+  const lastBeltSelectRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    const fetchBeltTypes = async () => {
-      try {
-        const response = await listAllBelts()
-        setBeltTypes(response)
-      } catch (e) {
-        toast.error('Houve um erro, por favor tente novamente mais tarde.')
-        redirect('/students')
-      }
-    }
-    fetchBeltTypes()
-  }, [])
-
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    control,
-    setValue,
-    getValues,
-    watch,
-    clearErrors,
-  } = useForm<FormStudentType>({
+  const form = useForm<FormStudentType>({
     resolver: zodResolver(formStudentSchema),
     defaultValues: {
+      student: {
+        name: '',
+        birthDate: '',
+        sex: 'M',
+      },
       belts: [{ type: '', achievedDate: '' }],
+      trainingCenterId: null,
     },
   })
 
   const { fields, append, remove } = useFieldArray({
-    control: control,
+    control: form.control,
     name: 'belts',
   })
 
-  function setSexValue(value: string) {
-    setValue('student.sex', (value as 'M') || 'F')
-    clearErrors('student.sex')
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
+        const [beltsResponse, userInfo] = await Promise.all([
+          listAllBelts(),
+          getUserInfo(),
+        ])
+        setBeltTypes(beltsResponse)
+        setCurrentUserRole(userInfo.role)
+      } catch (e) {
+        toast.error('Houve um erro, por favor tente novamente mais tarde.')
+        redirect('/students')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  function toggleCreateUser() {
+    setCreateUser(!createUser)
+    if (!createUser) {
+      // When enabling user creation, set default values
+      form.setValue('user', {
+        email: '',
+        password: '',
+        role: 'TEACHER',
+      })
+    } else {
+      // When disabling, remove the user object
+      form.setValue('user', undefined)
+    }
   }
 
   function handleFormSubmit(data: FormStudentType) {
+    // If createUser is false but there is still user data, remove it
+    if (!createUser && data.user) {
+      data.user = undefined
+    }
+
     const validationResult = validateBeltSequence(data.belts, beltTypes)
     if (!validationResult.isValid) {
       toast.error(validationResult.message, {
         position: 'top-center',
-        duration: 10 * 1000, // 10 seconds
+        duration: 10 * 1000,
         style: { filter: 'none', zIndex: 10 },
       })
       return
@@ -99,202 +139,411 @@ export function AddStudentForm({
     })
   }
 
-  return (
-    <form
-      className='flex flex-col w-full space-y-2'
-      onSubmit={handleSubmit(handleFormSubmit)}
-    >
-      <div className='grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-4 w-full'>
-        <div className='w-full'>
-          <Label>Nome Completo</Label>
-          <Input
-            placeholder='Digite o nome completo do aluno'
-            {...register('student.name')}
-          />
-          {errors.student?.name && (
-            <p className='text-destructive text-sm pt-0.5'>
-              {errors.student?.name.message}
-            </p>
-          )}
-        </div>
-        <div className='w-full'>
-          <Label>Sexo</Label>
-          <Select
-            onValueChange={setSexValue}
-            value={watch('student.sex') || ''}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder='Selecione o sexo do aluno' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='M'>Masculino</SelectItem>
-              <SelectItem value='F'>Feminino</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.student?.sex && (
-            <p className='text-destructive text-sm pt-0.5'>
-              {errors.student?.sex.message}
-            </p>
-          )}
-        </div>
-        <div className='w-full'>
-          <Label className='text-nowrap'>Data de Nascimento</Label>
-          <Input
-            type='date'
-            placeholder='Digite a data de nascimento do aluno'
-            {...register('student.birthDate')}
-          />
-          {errors.student?.birthDate && (
-            <p className='text-destructive text-sm pt-0.5 text-nowrap'>
-              {errors.student?.birthDate.message}
-            </p>
-          )}
-        </div>
-        <div className='w-full'>
-          <Label className='text-nowrap'>Núcleo</Label>
-          <TrainingCenterCombobox
-            setValue={setValue}
-            clearErrors={clearErrors}
-            trainingCenterList={trainingCenters}
-          />
-          {errors.trainingCenterId && (
-            <p className='text-destructive text-sm pt-0.5 text-nowrap'>
-              {errors.trainingCenterId.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <h2 className='font-bold'>Faixas</h2>
-      {/* FAIXA CARD */}
-      {fields.map((field, index) => (
-        <div key={field.id}>
-          {/* BELT INPUTS */}
-          <div className='flex flex-col gap-2 lg:gap-0 lg:flex-row lg:justify-between mb-2'>
-            {/* BELT AND ACHIEVED DATE */}
-            <div className='flex flex-col gap-2 lg:flex-row lg:gap-4'>
-              <div>
-                <Label>Faixa</Label>
-                <Select
-                  onValueChange={value => {
-                    setValue(`belts.${index}.type`, value)
-                    clearErrors(`belts.${index}.type`)
-                  }}
-                  value={watch(`belts.${index}.type`) || ''}
-                >
-                  <SelectTrigger className='w-full lg:w-60'>
-                    <SelectValue placeholder='Selecione a faixa' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {beltTypes.map(belt => {
-                      const beltType = Object.keys(belt)[0]
-                      const beltLabel = belt[beltType]
+  function addNewBelt() {
+    append({ type: '', achievedDate: '' })
+    // Focus on the belt select field after a short delay to ensure it's rendered
+    setTimeout(() => {
+      if (lastBeltSelectRef.current) {
+        lastBeltSelectRef.current.focus()
+      }
+    }, 100)
+  }
 
-                      const isAlreadySelected = getValues('belts').some(
-                        (selectedBelt, i) =>
-                          selectedBelt.type === beltType && i !== index
-                      )
-
-                      if (
-                        !isAlreadySelected ||
-                        watch(`belts.${index}.type`) === beltType
-                      ) {
-                        return (
-                          <SelectItem key={beltType} value={beltType}>
-                            {beltLabel}
-                          </SelectItem>
-                        )
-                      }
-                      return null
-                    })}
-                  </SelectContent>
-                </Select>
-                {errors.belts?.[index]?.type && (
-                  <p className='text-destructive text-sm pt-0.5'>
-                    {typeof errors.belts[index]?.type === 'object'
-                      ? errors.belts[index].type?.message
-                      : null}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label className='text-nowrap'>Data de início da faixa</Label>
-                <Input
-                  type='date'
-                  placeholder='Digite a data de nascimento do aluno'
-                  className='w-full lg:w-fit'
-                  {...register(`belts.${index}.achievedDate`)}
-                />
-                {errors.belts?.[index]?.achievedDate && (
-                  <p className='text-destructive text-sm pt-0.5'>
-                    {errors.belts?.[index].achievedDate?.message}
-                  </p>
-                )}
-              </div>
+  if (isLoading) {
+    return (
+      <div className='space-y-6'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Carregando...</CardTitle>
+            <CardDescription>
+              Aguarde enquanto carregamos as informações necessárias
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='animate-pulse space-y-4'>
+              <div className='h-4 bg-gray-200 rounded w-3/4' />
+              <div className='h-4 bg-gray-200 rounded w-1/2' />
+              <div className='h-4 bg-gray-200 rounded w-5/6' />
             </div>
-            {/* END BELT TIME + DELETE BUTTON */}
-            <div className='flex justify-between lg:justify-normal gap-4'>
-              <div>
-                <Label className='text-nowrap'>Data do fim da faixa</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className='space-y-6 pt-4'
+      >
+        {/* Switch to create user */}
+        <Card>
+          <CardContent className='pt-6'>
+            <div className='flex items-center justify-between flex-col sm:flex-row gap-2'>
+              <div className='space-y-0.5'>
+                <div className='text-base font-medium'>
+                  Criar conta de usuário
+                </div>
+                <div className='text-sm text-muted-foreground'>
+                  Marque esta opção se deseja criar uma conta de acesso ao
+                  sistema para este aluno
+                </div>
+              </div>
+              <Button
+                type='button'
+                variant={createUser ? 'default' : 'outline'}
+                onClick={toggleCreateUser}
+                className='sm:ml-4'
+              >
+                <UserPlus className='size-4 mr-2' />
+                {createUser ? 'Criar Usuário' : 'Não Criar Usuário'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Card de Informações do Usuário - Condicional */}
+        {createUser && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Informações do Usuário</CardTitle>
+              <CardDescription>
+                Dados de acesso e permissões do usuário no sistema
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+                <FormField
+                  control={form.control}
+                  name='user.email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Digite o email do usuário'
+                          type='email'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='user.password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Senha</FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            placeholder='Digite a senha'
+                            type={showPassword ? 'text' : 'password'}
+                            {...field}
+                          />
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className='h-4 w-4' />
+                            ) : (
+                              <Eye className='h-4 w-4' />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name='user.role'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Papel do Usuário</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione o papel do usuário' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='TEACHER'>Professor</SelectItem>
+                        {(currentUserRole === 'MASTER' ||
+                          currentUserRole === 'ADMIN') && (
+                          <SelectItem value='MASTER'>Mestre</SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Card de Informações Pessoais */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Informações Pessoais</CardTitle>
+            <CardDescription>Dados pessoais do aluno</CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+              <FormField
+                control={form.control}
+                name='student.name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome Completo</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Digite o nome completo do aluno'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='student.sex'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sexo</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione o sexo do aluno' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='M'>Masculino</SelectItem>
+                        <SelectItem value='F'>Feminino</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='student.birthDate'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data de Nascimento</FormLabel>
+                    <FormControl>
+                      <Input type='date' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='trainingCenterId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Núcleo (Opcional)</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ''}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione um núcleo (opcional)' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem
+                          value='none'
+                          onSelect={() =>
+                            form.setValue('trainingCenterId', null)
+                          }
+                        >
+                          Nenhum núcleo
+                        </SelectItem>
+                        {trainingCenters.map(center => (
+                          <SelectItem key={center.id} value={center.id}>
+                            {center.name} - {center.teacherName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Card de Faixas */}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Faixas</CardTitle>
+            <CardDescription>Histórico de faixas do aluno</CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            {fields.map((field, index) => (
+              <div key={field.id} className='space-y-4'>
+                <div className='flex flex-col gap-4 lg:flex-row lg:justify-between'>
+                  <div className='flex flex-col gap-4 lg:flex-row lg:gap-4 flex-1'>
+                    <FormField
+                      control={form.control}
+                      name={`belts.${index}.type`}
+                      render={({ field }) => (
+                        <FormItem className='flex-1'>
+                          <FormLabel>Faixa</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                ref={
+                                  index === fields.length - 1
+                                    ? lastBeltSelectRef
+                                    : undefined
+                                }
+                              >
+                                <SelectValue placeholder='Selecione a faixa' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {beltTypes && beltTypes.length > 0 ? (
+                                beltTypes.map(belt => {
+                                  const beltType = Object.keys(belt)[0]
+                                  const beltLabel = belt[beltType]
+
+                                  const isAlreadySelected = form
+                                    .getValues('belts')
+                                    .some(
+                                      (selectedBelt, i) =>
+                                        selectedBelt.type === beltType &&
+                                        i !== index
+                                    )
+
+                                  if (
+                                    !isAlreadySelected ||
+                                    field.value === beltType
+                                  ) {
+                                    return (
+                                      <SelectItem
+                                        key={beltType}
+                                        value={beltType}
+                                      >
+                                        {beltLabel}
+                                      </SelectItem>
+                                    )
+                                  }
+                                  return null
+                                })
+                              ) : (
+                                <SelectItem value='none' disabled>
+                                  Carregando faixas...
+                                </SelectItem>
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`belts.${index}.achievedDate`}
+                      render={({ field }) => (
+                        <FormItem className='flex-1'>
+                          <FormLabel>Data de início da faixa</FormLabel>
+                          <FormControl>
+                            <Input type='date' {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className='flex items-end gap-4'>
+                    <div className='flex flex-col'>
+                      <FormLabel>Data do fim da faixa</FormLabel>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button type='button' variant='outline'>
+                              <CalendarFold className='h-4 w-4' />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side='bottom'>
+                            <p>A data de término da faixa definida pelo</p>
+                            <p>início da próxima faixa se for seguida</p>
+                            <p>a sequência correta.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+
+                    {fields.length > 1 && (
                       <Button
                         type='button'
-                        variant='outline'
-                        className='self-end'
+                        variant='destructive'
+                        size='icon'
+                        onClick={() => remove(index)}
                       >
-                        <CalendarFold />
+                        <Trash className='h-4 w-4' />
                       </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>
-                      <p>A data de término da faixa definido pelo </p>
-                      <p>início da próxima faixa se for seguido</p>
-                      <p>a sequência correta.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                    )}
+                  </div>
+                </div>
+                {index < fields.length - 1 && <Separator />}
               </div>
-              {fields.length > 1 && (
-                <Button
-                  type='button'
-                  variant={'destructive'}
-                  onClick={() => remove(index)}
-                  className='mt-5'
-                >
-                  <Trash />
-                </Button>
-              )}
-            </div>
-          </div>
-          <Separator />
+            ))}
+
+            <Button
+              type='button'
+              variant='link'
+              className='w-fit text-blue-600 underline p-0'
+              onClick={addNewBelt}
+            >
+              Novo cadastro de faixa
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Botões de Ação */}
+        <div className='flex flex-col-reverse gap-4 sm:flex-row'>
+          <Button
+            variant='outline'
+            className='flex-1'
+            type='button'
+            onClick={() => redirect('/students')}
+          >
+            Cancelar
+          </Button>
+          <Button variant='green' className='flex-1'>
+            Salvar Aluno
+          </Button>
         </div>
-      ))}
-      {errors.belts && !Array.isArray(errors.belts) && (
-        <p className='text-destructive text-sm pt-0.5'>
-          {errors.belts.message}
-        </p>
-      )}
-      <Button
-        variant={'link'}
-        className='w-fit text-blue-600 underline p-0'
-        type='button'
-        onClick={() => append({ type: '', achievedDate: '' })}
-      >
-        Novo cadastro de faixa
-      </Button>
-      <div className='flex flex-col-reverse gap-2 sm:gap-4 sm:flex-row'>
-        <Button
-          variant={'outline'}
-          className='grow'
-          type='button'
-          onClick={() => redirect('/students')}
-        >
-          Cancelar
-        </Button>
-        <Button variant={'green'} className='grow'>
-          Salvar Aluno
-        </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   )
 }

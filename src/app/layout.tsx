@@ -22,7 +22,7 @@ export default function RootLayout({
         <link rel='icon' href={icon.src} sizes='any' />
       </head>
       <body className={`${inter.className} antialiased`}>
-        <main className='flex flex-col h-screen w-full scroll-smooth'>
+        <main className='flex flex-col h-screen w-full scroll-smooth overflow-hidden'>
           {children}
           <Toaster theme='light' richColors />
         </main>

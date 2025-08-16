@@ -107,6 +107,10 @@ export function StudentDetailsDialog({ studentId }: { studentId: string }) {
                   <p className='text-muted-foreground'>Sexo</p>
                   <Skeleton className='h-5 w-full' />
                 </div>
+                <div className='space-y-2'>
+                  <p className='text-muted-foreground'>Núcleo</p>
+                  <Skeleton className='h-5 w-full' />
+                </div>
               </>
             ) : (
               <>
@@ -126,6 +130,17 @@ export function StudentDetailsDialog({ studentId }: { studentId: string }) {
                     {student.student.sex === 'M' ? 'Masculino' : 'Feminino'}
                   </span>
                 </div>
+                {student.trainingCenter && (
+                  <div className='space-y-2'>
+                    <p className='text-muted-foreground'>Núcleo</p>
+                    <div className='font-medium'>
+                      <p>{student.trainingCenter.name}</p>
+                      <p className='text-xs text-muted-foreground'>
+                        Professor: {student.trainingCenter.teacherName}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>

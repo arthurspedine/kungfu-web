@@ -37,6 +37,15 @@ export async function listAllStudents(
 
 export async function handleAddStudent(data: FormStudentType) {
   const accessToken = await getToken()
+  const submitData = {
+    ...data,
+    user: data.user
+      ? {
+          login: { email: data.user.email, password: data.user.password },
+          role: data.user.role.toUpperCase(),
+        }
+      : null,
+  }
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/student/register`,
@@ -48,7 +57,7 @@ export async function handleAddStudent(data: FormStudentType) {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(submitData),
       }
     )
 

@@ -179,7 +179,7 @@ export function AddTrainingCenterForm({
             <div className='w-full sm:w-1/3'>
               <Label>Número</Label>
               {loading ? (
-                <Skeleton className='h-9 w-1/3' />
+                <Skeleton className='h-9 w-2/3' />
               ) : (
                 <Input
                   value={
@@ -188,7 +188,7 @@ export function AddTrainingCenterForm({
                       ? 0
                       : getValues('number')
                   }
-                  className='w-1/3'
+                  className='w-2/3'
                   placeholder='Digite o número do núcleo'
                   disabled={disabledInputs}
                   type='number'

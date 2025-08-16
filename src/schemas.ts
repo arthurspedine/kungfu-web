@@ -97,6 +97,21 @@ export type AddTrainingCenterType = z.infer<typeof addTrainingCenterSchema>
 export type EditTrainingCenterType = z.infer<typeof editTrainingCenterSchema>
 
 export const formStudentSchema = z.object({
+  user: z
+    .object({
+      email: z
+        .string()
+        .email('Formato de email inválido.')
+        .max(100, 'O email deve ter no máximo 100 caracteres.'),
+      password: z
+        .string()
+        .min(6, 'A senha deve ter pelo menos 6 caracteres.')
+        .max(100, 'A senha deve ter no máximo 100 caracteres.'),
+      role: z.enum(['TEACHER', 'MASTER'], {
+        errorMap: () => ({ message: 'O papel do usuário é obrigatório.' }),
+      }),
+    })
+    .optional(),
   student: z.object({
     name: z.string().min(2, { message: 'Nome completo é obrigatório.' }),
     birthDate: z.string().refine(
@@ -133,12 +148,7 @@ export const formStudentSchema = z.object({
       })
     )
     .min(1, { message: 'Adicione pelo menos uma faixa' }),
-  trainingCenterId: z
-    .string()
-    .uuid({
-      message: 'O núcleo é obrigatório.',
-    })
-    .default(''),
+  trainingCenterId: z.string().optional().nullable(),
 })
 
 export type FormStudentType = z.infer<typeof formStudentSchema>

@@ -11,7 +11,7 @@ export default async function AddTrainingCentersPage() {
   const data: { id: string; name: string }[] = await listAllTeachers.json()
 
   return (
-    <div className='flex flex-col flex-grow w-full space-y-6'>
+    <div className='flex flex-col flex-grow w-full gap-6'>
       <Title className='text-4xl border-b border-input pb-4 w-full'>
         Núcleo
       </Title>

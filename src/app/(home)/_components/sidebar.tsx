@@ -81,45 +81,42 @@ export function MenuSidebar() {
   }
 
   return (
-    <>
-      {/* Mobile Trigger */}
-      <Sheet>
-        <SheetTrigger asChild className='lg:hidden'>
-          <Button
-            variant='outline'
-            size='icon'
-            className='fixed top-6 right-4 z-50'
-          >
-            <Menu className='size-4' />
-            <span className='sr-only'>Abrir menu</span>
-          </Button>
-        </SheetTrigger>
+    <Sheet>
+      <SheetTrigger asChild className='lg:hidden'>
+        <Button
+          variant='outline'
+          size='icon'
+          className='fixed top-6 right-4 z-50'
+        >
+          <Menu className='size-4' />
+          <span className='sr-only'>Abrir menu</span>
+        </Button>
+      </SheetTrigger>
 
-        {/* Desktop Sidebar */}
-        <div className='hidden lg:block lg:w-72 h-full bg-secondary space-y-8 px-6 shadow-xl'>
-          <SidebarContent
-            userInfo={userInfo}
-            navigation_links={navigation_links}
-          />
-        </div>
+      {/* Desktop Sidebar */}
+      <div className='hidden lg:block lg:w-72 h-full bg-secondary space-y-8 px-6 shadow-xl'>
+        <SidebarContent
+          userInfo={userInfo}
+          navigation_links={navigation_links}
+        />
+      </div>
 
-        {/* Mobile Sidebar */}
-        <SheetContent side='left' className='w-72 p-0'>
-          <SheetHeader className='text-left p-6 pb-0'>
-            <SheetTitle className='sr-only'>Menu de Navegação</SheetTitle>
-            <SheetDescription className='sr-only'>
-              Logo do Kung Fu Taishan, informações do usuário e lista de
-              navegação.
-            </SheetDescription>
-          </SheetHeader>
-          <SidebarContent
-            userInfo={userInfo}
-            navigation_links={navigation_links}
-            mobile
-          />
-        </SheetContent>
-      </Sheet>
-    </>
+      {/* Mobile Sidebar */}
+      <SheetContent side='left' className='w-72 p-0'>
+        <SheetHeader className='text-left p-6 pb-0'>
+          <SheetTitle className='sr-only'>Menu de Navegação</SheetTitle>
+          <SheetDescription className='sr-only'>
+            Logo do Kung Fu Taishan, informações do usuário e lista de
+            navegação.
+          </SheetDescription>
+        </SheetHeader>
+        <SidebarContent
+          userInfo={userInfo}
+          navigation_links={navigation_links}
+          mobile
+        />
+      </SheetContent>
+    </Sheet>
   )
 }
 

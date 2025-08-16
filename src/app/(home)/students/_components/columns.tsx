@@ -76,6 +76,14 @@ export const columns: ColumnDef<StudentInfo>[] = [
     },
   },
   {
+    accessorKey: 'trainingCenter',
+    id: 'trainingCenter',
+    header: 'Núcleo',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
     id: 'actions',
     cell: ({ row }) => {
       const student = row.original
@@ -84,14 +92,6 @@ export const columns: ColumnDef<StudentInfo>[] = [
           <StudentDetailsDialog studentId={student.id} />
         </div>
       )
-    },
-  },
-  {
-    accessorKey: 'trainingCenter',
-    id: 'trainingCenter',
-    meta: { hidden: true },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
 ]

@@ -37,6 +37,7 @@ export function StudentsContent() {
       }
 
       const result = await listAllStudents(params.toString())
+
       setData(result)
     } catch (error) {
       console.error('Erro:', error)
