@@ -13,6 +13,7 @@ import {
   editTrainingCenterSchema,
 } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { DialogClose } from '@radix-ui/react-dialog'
 import { XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -44,7 +45,6 @@ export function EditTrainingCenterForm({
     handleSubmit,
     register,
     setValue,
-    getValues,
     clearErrors,
     setError,
     reset,
@@ -189,11 +189,8 @@ export function EditTrainingCenterForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(handleEditSubmit)}
-      className='flex flex-col gap-4'
-    >
-      <div className='grid grid-cols-1 gap-4'>
+    <form onSubmit={handleSubmit(handleEditSubmit)}>
+      <div className='space-y-4 pr-2'>
         {/* Nome */}
         <div>
           <Label>Nome do Núcleo</Label>
@@ -335,10 +332,12 @@ export function EditTrainingCenterForm({
       </div>
 
       {/* Botões */}
-      <div className='flex justify-end gap-2 pt-4'>
-        <Button type='button' variant='outline' onClick={onCancel}>
-          Cancelar
-        </Button>
+      <div className='flex justify-end gap-2 pt-4 border-t mt-4'>
+        <DialogClose asChild>
+          <Button type='button' variant='outline' onClick={onCancel}>
+            Cancelar
+          </Button>
+        </DialogClose>
         <Button type='submit'>Salvar Alterações</Button>
       </div>
     </form>
@@ -347,8 +346,8 @@ export function EditTrainingCenterForm({
 
 function EditTrainingCenterFormSkeleton() {
   return (
-    <div className='flex flex-col gap-4'>
-      <div className='grid grid-cols-1 gap-4'>
+    <div className='flex flex-col h-full'>
+      <div className='flex-1 space-y-4 pr-2'>
         {/* Nome */}
         <div className='space-y-2'>
           <Skeleton className='h-4 w-24' />
@@ -411,7 +410,7 @@ function EditTrainingCenterFormSkeleton() {
       </div>
 
       {/* Botões */}
-      <div className='flex justify-end gap-2 pt-4'>
+      <div className='flex justify-end gap-2 pt-4 border-t mt-4'>
         <Skeleton className='h-10 w-20' />
         <Skeleton className='h-10 w-32' />
       </div>

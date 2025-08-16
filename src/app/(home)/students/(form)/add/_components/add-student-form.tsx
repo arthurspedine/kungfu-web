@@ -37,7 +37,7 @@ import { type FormStudentType, formStudentSchema } from '@/schemas'
 import type { RequestBeltType, TrainingCenterSimpleInfo } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarFold, Eye, EyeOff, Trash, UserPlus } from 'lucide-react'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -47,6 +47,7 @@ import { validateBeltSequence } from '../../validate-belt-sequence'
 export function AddStudentForm({
   trainingCenters,
 }: { trainingCenters: TrainingCenterSimpleInfo[] }) {
+  const router = useRouter()
   const [beltTypes, setBeltTypes] = useState<RequestBeltType[]>([])
   const [currentUserRole, setCurrentUserRole] = useState<
     'TEACHER' | 'MASTER' | 'ADMIN' | null
@@ -130,7 +131,7 @@ export function AddStudentForm({
       loading: 'Cadastrando aluno...',
       success: () => {
         setTimeout(() => {
-          redirect('/students')
+          router.push('/students')
         }, 500)
         return 'Aluno cadastrado com sucesso!'
       },
@@ -523,7 +524,7 @@ export function AddStudentForm({
             variant='outline'
             className='flex-1'
             type='button'
-            onClick={() => redirect('/students')}
+            onClick={() => router.push('/students')}
           >
             Cancelar
           </Button>

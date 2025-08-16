@@ -27,7 +27,7 @@ import type {
 } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarFold, Trash } from 'lucide-react'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -43,6 +43,7 @@ export function EditStudentForm({
   studentData: StudentDetails
   trainingCenters: TrainingCenterSimpleInfo[]
 }) {
+  const router = useRouter()
   const [beltTypes, setBeltTypes] = useState<RequestBeltType[]>([])
   const [isBeltsLoading, setIsBeltsLoading] = useState(true)
   const [isStudentDataLoaded, setIsStudentDataLoaded] = useState(false)
@@ -122,7 +123,7 @@ export function EditStudentForm({
       loading: 'Atualizando informações...',
       success: () => {
         setTimeout(() => {
-          redirect('/students')
+          router.push('/students')
         }, 500)
         return 'Aluno atualizado com sucesso!'
       },
@@ -338,7 +339,7 @@ export function EditStudentForm({
           variant={'outline'}
           className='grow'
           type='button'
-          onClick={() => redirect('/students')}
+          onClick={() => router.push('/students')}
         >
           Cancelar
         </Button>

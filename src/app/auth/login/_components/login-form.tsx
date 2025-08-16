@@ -4,12 +4,13 @@ import { Input } from '@/components/ui/input'
 import { loginUser } from '@/http/auth'
 import { type LoginDataInput, loginDataSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 export function LoginForm() {
+  const router = useRouter()
   const {
     register,
     formState: { errors },
@@ -28,7 +29,7 @@ export function LoginForm() {
         position: 'top-center',
         style: { filter: 'none', zIndex: 10 },
       })
-      redirect('/')
+      router.push('/training_centers')
     } catch (e) {
       toast.error('Algo deu errado. Por favor, verifique suas credenciais.', {
         position: 'top-center',

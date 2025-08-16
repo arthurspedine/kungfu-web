@@ -20,7 +20,7 @@ export default async function middleware(req: NextRequest) {
   const isValidToken = token ? await verifyJWT(token) : null
 
   if (isValidToken && isAuthRoute) {
-    return NextResponse.redirect(new URL('/', req.nextUrl))
+    return NextResponse.redirect(new URL('/training_centers', req.nextUrl))
   }
 
   if (!isValidToken && !isAuthRoute) {

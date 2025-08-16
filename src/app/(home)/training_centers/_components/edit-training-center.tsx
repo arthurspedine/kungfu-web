@@ -53,17 +53,19 @@ export function EditTrainingCenterDialog({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+      <DialogContent className='max-w-2xl max-h-[90vh] flex flex-col'>
         <DialogTitle>Editar Núcleo</DialogTitle>
         <DialogDescription>
           Atualize as informações do núcleo de treinamento.
         </DialogDescription>
 
-        <EditTrainingCenterForm
-          trainingCenterId={trainingCenterId}
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+        <div className='overflow-y-auto max-h-[90vh] pt-4 pb-4'>
+          <EditTrainingCenterForm
+            trainingCenterId={trainingCenterId}
+            onSuccess={handleSuccess}
+            onCancel={handleCancel}
+          />
+        </div>
 
         <DialogClose ref={dialogCloseRef} className='hidden' />
       </DialogContent>
@@ -88,16 +90,18 @@ export function EditTrainingCenterStandalone({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+      <DialogContent className='max-w-2xl max-h-[90vh] flex flex-col p-0'>
         <DialogTitle>Editar Núcleo</DialogTitle>
         <DialogDescription>
           Atualize as informações do núcleo de treinamento.
         </DialogDescription>
 
-        <EditTrainingCenterForm
-          trainingCenterId={trainingCenterId}
-          onSuccess={onSuccess}
-        />
+        <div className='overflow-y-auto max-h-[90vh] pt-4 pb-4'>
+          <EditTrainingCenterForm
+            trainingCenterId={trainingCenterId}
+            onSuccess={onSuccess}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   )
